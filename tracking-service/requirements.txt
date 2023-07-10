@@ -1,0 +1,8 @@
+aio-pika
+fastapi
+aioredis
+motor
+aiohttp
+sqlalchemy
+databases
+uvicorn

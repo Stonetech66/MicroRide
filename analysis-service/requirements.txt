@@ -1,0 +1,2 @@
+motor==3.1.2
+aio-pika

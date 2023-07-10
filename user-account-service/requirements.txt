@@ -1,0 +1,10 @@
+aio-pika
+fastapi
+aioredis
+psycopg2-binary
+aiohttp
+sqlalchemy
+databases
+uvicorn
+fastapi-jwt-auth
+alembic
