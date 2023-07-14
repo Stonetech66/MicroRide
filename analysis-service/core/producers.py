@@ -1,12 +1,12 @@
 import json
 from aio_pika import connect, ExchangeType, Message
-
-
+import os
+RABBITMQ_URL= os.getenv('RABBITMQ_URL')
 
 connection= None
 async def get_connection():
     global connection
-    connection= await connect('amqp://guest:guest@localhost/')
+    connection= await connect(RABBITMQ_URL)
     return connection
 
 async def get_channel():

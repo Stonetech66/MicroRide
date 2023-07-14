@@ -1,2 +1,6 @@
 motor==3.1.2
-aio-pika
+aio-pika==9.1.2
+aioredis==2.0.1
+fastapi==0.95.1
+aiohttp==3.8.4
+uvicorn==0.22.0

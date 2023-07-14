@@ -1,15 +1,15 @@
-from fastapi import Depends,  HTTPException, Header, WebSocket, WebSocketDisconnect
-from fastapi.security import HTTPBearer
+from fastapi import Depends,  HTTPException, WebSocket, WebSocketDisconnect
 import aiohttp
-import asyncio
 import json
 import aioredis
 from datetime import datetime, timezone
 from .database import driver_table
 from .websockets import WebsocketManager
+import os
 
-AUTH_URL= 'http://localhost:8001/verify-token'
-
+USER_ACCOUNT_SERVICE= os.getenv('USER_ACCOUNT_SERVICE_URL')
+AUTH_URL= f'{USER_ACCOUNT_SERVICE}/verify-token'
+REDIS_URL= os.getenv('REDIS_URL')
 
 connections= WebsocketManager()
 
@@ -45,7 +45,7 @@ async def get_current_websocket_user(token:str,websocket:WebSocket, type:str=Non
                 raise exception
 
         else:
-            redis= await  aioredis.from_url('redis://localhost', decode_responses=True)
+            redis= await  aioredis.from_url(REDIS_URL, decode_responses=True)
             user_id=await connections.validate_token_in_redis(redis, token)
             if user_id:
                 await connections.connect_user(websocket, user_id)
@@ -80,7 +80,7 @@ async def get_current_websocket_driver(token:str,websocket:WebSocket, type:str=N
                 raise exception
 
         else:
-            redis= await  aioredis.from_url('redis://localhost', decode_responses=True)
+            redis= await  aioredis.from_url(REDIS_URL, decode_responses=True)
             user_id=await connections.validate_token_in_redis(redis, token)
             if user_id:
                 driver=await driver_table.find_one({'user_id':user_id})

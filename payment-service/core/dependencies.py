@@ -1,9 +1,9 @@
-from fastapi import Depends,  HTTPException, Header
+from fastapi import Depends,  HTTPException
 from fastapi.security import HTTPBearer
 import aiohttp
-import asyncio
+import os
 
-AUTH_URL= 'http://localhost:8001/verify-token'
+AUTH_URL= os.getenv('USER_ACCOUNT_SERVICE_URL')
 
 async def get_current_user(Authorization=Depends(HTTPBearer()), ):
     exception=HTTPException(status_code=401, detail='invalid access token or access token has expired', headers={'WWW-Authenticate': 'Bearer'})

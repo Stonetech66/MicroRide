@@ -5,7 +5,10 @@ from .producers import publish_closest_driver
 from .utils import get_closest_driver
 from .database import ride_table, driver_table
 from functools import partial
+import os
 
+
+RABBITMQ_URL= os.getenv('RABBITMQ_URL')
 
 async def ride_consumer_callback(channel, message):
     async with message.process():
@@ -28,28 +31,28 @@ async def driver_consumer_callback( message):
 
 
 async def consumer()-> None:
-    connection= await connect('amqp://guest:guest@localhost/')
-    channel= await connection.channel()
 
     try:
+        connection= await connect(RABBITMQ_URL)
+        async with connection:
+            channel= await connection.channel()
+            ride_events= await channel.declare_exchange('ride-events', ExchangeType.TOPIC)
+            ride_queue= await channel.declare_queue('', durable=True)
+            await ride_queue.bind(ride_events, routing_key='ride.confirmed.#')
+            await ride_queue.bind(ride_events, routing_key='ride.canceled.#')
+            await ride_queue.bind(ride_events, routing_key='ride.find.driver.#')
 
-        ride_events= await channel.declare_exchange('ride-events', ExchangeType.TOPIC)
-        ride_queue= await channel.declare_queue('', durable=True)
-        await ride_queue.bind(ride_events, routing_key='ride.confirmed.#')
-        await ride_queue.bind(ride_events, routing_key='ride.canceled.#')
-        await ride_queue.bind(ride_events, routing_key='ride.find.driver.#')
-
-        driver_events= await channel.declare_exchange('driver-events', ExchangeType.TOPIC)
-        driver_queue= await channel.declare_queue('tracking-queue-events', durable=True)
-        await driver_queue.bind(driver_events, routing_key='driver.created.#')
-
-
-        await ride_queue.consume(partial(ride_consumer_callback, channel))
-        await driver_queue.consume(driver_consumer_callback)
+            driver_events= await channel.declare_exchange('driver-events', ExchangeType.TOPIC)
+            driver_queue= await channel.declare_queue('tracking-queue-events', durable=True)
+            await driver_queue.bind(driver_events, routing_key='driver.created.#')
 
 
-        while True:
-            await asyncio.sleep(1)
+            await ride_queue.consume(partial(ride_consumer_callback, channel))
+            await driver_queue.consume(driver_consumer_callback)
+
+
+            while True:
+                await asyncio.sleep(1)
 
                     
 

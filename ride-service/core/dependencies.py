@@ -5,8 +5,10 @@ import asyncio
 import json
 import aioredis
 from datetime import datetime, timezone
+import os
 
-AUTH_URL= 'http://localhost:8001/verify-token'
+USER_ACCOUNT_SERVICE= os.getenv('USER_ACCOUNT_SERVICE_URL')
+AUTH_URL= f'{USER_ACCOUNT_SERVICE}/verify-token'
 
 async def validate_token_in_redis(redis, token):
     jwt=await redis.get(f'auth-{token}')

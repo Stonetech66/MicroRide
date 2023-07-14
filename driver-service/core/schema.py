@@ -1,7 +1,7 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from typing import Union
 from uuid import UUID
-from datetime import datetime, date
+from datetime import date
 from .models import Ride_Status
 
 

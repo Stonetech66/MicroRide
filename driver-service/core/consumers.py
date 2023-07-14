@@ -3,7 +3,10 @@ import json
 from aio_pika import connect, ExchangeType
 from .models import Ride, Ride_Status
 from .database import database
+import os
 
+
+RABBITMQ_URL= os.getenv('RABBITMQ_URL')
 
 
 
@@ -45,7 +48,7 @@ async def payment_consumer_callback(message):
 
 async def consumer()-> None:
     try: 
-        connection= await connect('amqp://guest:guest@localhost/')
+        connection= await connect(RABBITMQ_URL)
         async with connection:
             channel= await connection.channel()
             ride_events= await channel.declare_exchange('ride-events', ExchangeType.TOPIC)

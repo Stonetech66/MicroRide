@@ -1,5 +1,5 @@
 from .producers import publish_find_nearest_ride, publish_ride_canceled, publish_ride_confirmed, publish_get_ride_fare
-from .models import Ride_Status
+
 
 async def background_task_find_ride(redis, ride_data, user_id):
     await redis.hset('ride-'+str(user_id), mapping=ride_data)

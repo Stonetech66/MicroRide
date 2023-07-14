@@ -4,7 +4,10 @@ import json
 from aio_pika import connect, ExchangeType
 from .database import driver_table
 from .websockets import send_driver_websocket_data, send_user_websocket_data
+import os
 
+
+RABBITMQ_URL= os.getenv('RABBITMQ_URL')
 
 
 
@@ -39,7 +42,10 @@ async def payment_consumer_callback( message):
     async with message.process():
         data=json.loads(message.body)
         if message.routing_key == 'payment.success':
-            await send_user_websocket_data(str(data['user_id']), 'payment-completed', data)
+            await send_user_websocket_data(str(data['user_id']), 'payment-successful', data)
+            await send_driver_websocket_data(str(data['driver_id']), 'payment-successful', data)
+        elif message.routing_key == 'payment.failed':
+            await send_user_websocket_data(str(data['user_id']), 'payment-successful', data)
     
 async def driver_consumer_callback( message):
     async with message.process():
@@ -49,7 +55,7 @@ async def driver_consumer_callback( message):
 
 async def consumer()-> None:
     try: 
-        connection= await connect('amqp://guest:guest@localhost/')
+        connection= await connect(RABBITMQ_URL)
         async with connection:
             channel= await connection.channel()
                         
@@ -59,7 +65,7 @@ async def consumer()-> None:
 
             payment_events= await channel.declare_exchange('payment-events', ExchangeType.TOPIC,)
             payment_queue= await channel.declare_queue('notification-service-queue-payment',  durable=True)
-            await payment_queue.bind(payment_events, routing_key='payment.ride.success.#')
+            await payment_queue.bind(payment_events, routing_key='payment.ride.*')
 
             ride_events= await channel.declare_exchange('ride-events', ExchangeType.TOPIC,)
             ride_queue= await channel.declare_queue('notification-service-queue-ride', durable=True)

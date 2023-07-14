@@ -1,7 +1,6 @@
 from sqlalchemy import Column, String, Float, Date, Integer, Boolean, Table, MetaData, Enum, func, TIMESTAMP, ForeignKey
 from datetime import datetime
 from sqlalchemy.sql import expression
-from sqlalchemy.orm import relationship
 import enum
 metadata=MetaData()
 

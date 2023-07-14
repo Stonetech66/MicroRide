@@ -1,10 +1,11 @@
 import websockets
 import json 
+import os
 from fastapi import WebSocket
 
-WEBSOCKET_URL='ws://localhost:8003'
+NOTIFICATION_SERVICE_URL=os.getenv('NOTIFICATION_SERVICE_URL')
 
-WEBSOCKET_SECRET_KEY='secret'
+WEBSOCKET_SECRET_KEY=os.getenv('WEBSOCKET_SECRET_KEY', 'secret')
 
 
 class WebsocketManager :
@@ -57,11 +58,11 @@ class WebsocketManager :
 
 async def send_user_websocket_data(user_id, event, data):
         data.update({'event':event})
-        async with websockets.connect(WEBSOCKET_URL+f'/ws/ride/?token={WEBSOCKET_SECRET_KEY}&type=server') as websocket:
+        async with websockets.connect(NOTIFICATION_SERVICE_URL+f'/ws/ride/?token={WEBSOCKET_SECRET_KEY}&type=server') as websocket:
             await websocket.send(json.dumps(data))
 
 
 async def send_driver_websocket_data(driver_id, event, data):
         data.update({'event':event})
-        async with websockets.connect(WEBSOCKET_URL+f'/ws/driver/?token={WEBSOCKET_SECRET_KEY}&type=server') as websocket:
+        async with websockets.connect(NOTIFICATION_SERVICE_URL+f'/ws/driver/?token={WEBSOCKET_SECRET_KEY}&type=server') as websocket:
             await websocket.send(json.dumps(data))

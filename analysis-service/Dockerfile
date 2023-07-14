@@ -8,7 +8,7 @@ RUN pip install -r requirements.txt
 
 COPY . /app/
 ENV PYTHONUNBUFFERED=1
-RUN chmod +x server.sh && chmod +x consumer.sh 
+RUN  chmod +x consumer.sh 
 
 
 

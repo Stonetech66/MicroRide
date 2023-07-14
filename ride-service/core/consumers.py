@@ -7,16 +7,16 @@ from .models import Ride, Ride_Status
 import websockets
 from datetime import datetime
 from functools import partial
+import os
 
-WEBSOCKET_URL='ws://localhost:8003/ws/ride/'
-WEBSOCKET_SECRET_KEY='secret'
-
-
-
+NOTIFICATION_SERVICE_URL=os.getenv('NOTIFICATION_SERVICE_URL')
+WEBSOCKET_SECRET_KEY=os.getenv('WEBSOCKET_SECRET_KEY')
+RABBITMQ_URL= os.getenv('RABBITMQ_URL')
+REDIS_URL= os.getenv('REDIS_URL')
 
 async def send_websocket_data(user_id, data):
         time=datetime.now()
-        async with websockets.connect(WEBSOCKET_URL+f'?type=server&token={WEBSOCKET_SECRET_KEY}') as websocket:
+        async with websockets.connect(NOTIFICATION_SERVICE_URL+f'/ws/ride/?type=server&token={WEBSOCKET_SECRET_KEY}') as websocket:
             await websocket.send(json.dumps(data))
         
         
@@ -63,11 +63,11 @@ async def payment_consumer_callback(message):
 
 
 async def consumer()-> None:
-    connection= await connect('amqp://guest:guest@localhost/')
+    connection= await connect(RABBITMQ_URL)
     try:
         async with connection:
             channel= await connection.channel()
-            redis= await aioredis.from_url('redis://localhost', decode_responses=True)
+            redis= await aioredis.from_url(REDIS_URL, decode_responses=True)
 
 
             analysis_events= await channel.declare_exchange('analysis-events', ExchangeType.TOPIC,)

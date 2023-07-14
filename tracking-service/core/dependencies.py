@@ -6,7 +6,11 @@ import json
 import aioredis
 from datetime import datetime, timezone
 
-AUTH_URL= 'http://localhost:8001/verify-token'
+import os
+
+USER_ACCOUNT_SERVICE= os.getenv('USER_ACCOUNT_SERVICE_URL')
+AUTH_URL= f'{USER_ACCOUNT_SERVICE}/verify-token'
+REDIS_URL= os.getenv('REDIS_URL')
 
 async def validate_token_in_redis(redis, token):
     jwt=await redis.get(f'auth-{token}')
@@ -19,7 +23,7 @@ async def validate_token_in_redis(redis, token):
 
 async def get_current_user(Authorization=Depends(HTTPBearer()), ):
     exception=HTTPException(status_code=401, detail='invalid access token or access token has expired', headers={'WWW-Authenticate': 'Bearer'})
-    redis= await  aioredis.from_url('redis://localhost', decode_responses=True)
+    redis= await  aioredis.from_url(REDIS_URL, decode_responses=True)
     try:
         user_id=await validate_token_in_redis(redis, Authorization.credentials)
         if user_id:

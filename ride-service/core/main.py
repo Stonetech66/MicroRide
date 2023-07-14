@@ -6,17 +6,18 @@ import uuid
 import aioredis
 from .crud import RideCrud
 from .background_tasks import background_task_find_ride, background_task_cancel_ride, background_task_confirm_ride
-
+import os 
 
 app= FastAPI()
 
-
+REDIS_URL= os.getenv('REDIS_URL')
 redis= None
+
 @app.on_event('startup')
 async def startup():
     await database.connect()
     global redis
-    redis= await  aioredis.from_url('redis://localhost', decode_responses=True)
+    redis= await  aioredis.from_url(REDIS_URL, decode_responses=True)
     
 
 
@@ -28,7 +29,7 @@ async def shutdown():
 
 
 
-NOTIFICATION_SERVICE_URL=''
+NOTIFICATION_SERVICE_URL=os.getenv('NOTIFICATION_SERVICE_URL')
 
 
 @app.get('/rides/', response_model=list[RideDetails])
@@ -53,8 +54,8 @@ async def find_ride(schema:RideBase,task:BackgroundTasks,  user_id=Depends(get_c
     ride_data= {'ride_id':ride_id, 'user_id':user_id, **schema.dict()}
     task.add_task(background_task_find_ride, redis, ride_data, user_id)
     return {
-        'message':'connect to the websocket url to get notified when the closest driver has been found and other ride events',
-        'websocket_url':f'{NOTIFICATION_SERVICE_URL}/ride/{user_id}',
+        'message':'connect to the websocket url to listen for ride events ride events',
+        'websocket_url':f'{NOTIFICATION_SERVICE_URL}/ride?token=jwt-credential',
         }
 
 @app.post('/rides/{ride_id}/confirm')
