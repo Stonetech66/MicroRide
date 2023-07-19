@@ -7,9 +7,9 @@ import aioredis
 from datetime import datetime, timezone
 import os
 
-USER_ACCOUNT_SERVICE= os.getenv('USER_ACCOUNT_SERVICE_URL')
-AUTH_URL= f'{USER_ACCOUNT_SERVICE}/verify-token'
-REDIS_URL= os.getenv('REDIS_URL')
+AUTH_URL= os.getenv('VERIFY_TOKEN_URL')
+REDIS_HOST=os.getenv('REDIS_HOST')
+REDIS_URL= f'redis://{REDIS_HOST}'
 
 async def validate_token_in_redis(redis, token):
     jwt=await redis.get(f'auth-{token}')

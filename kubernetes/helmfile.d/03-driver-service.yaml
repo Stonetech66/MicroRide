@@ -1,0 +1,23 @@
+releases:
+  - name: redis-driver-service
+    chart: ../charts/redis
+    values:
+      - ../values/redis/driver-service.yaml
+
+
+  - name: postgres-driver-service
+    chart: ../charts/postgres
+    values:
+      - ../values/postgres/driver-service.yaml
+
+
+  - name: consumer-driver-service
+    chart: ../charts/MicroRide
+    values:
+      - ../values/consumer/driver-service.yaml
+
+
+  - name: driver-service
+    chart: ../charts/MicroRide
+    values:
+      - ../values/microride/driver-service.yaml

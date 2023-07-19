@@ -1,0 +1,25 @@
+releases:
+  - name: redis-ride-service
+    chart: ../charts/redis
+    values:
+      - ../values/redis/ride-service.yaml
+
+
+
+  - name: postgres-ride-service
+    chart: ../charts/postgres
+    values:
+      - ../values/postgres/ride-service.yaml
+
+
+  - name: consumer-ride-service
+    chart: ../charts/MicroRide
+    values:
+      - ../values/consumer/ride-service.yaml
+
+
+
+  - name: ride-service
+    chart: ../charts/MicroRide
+    values:
+      - ../values/microride/ride-service.yaml

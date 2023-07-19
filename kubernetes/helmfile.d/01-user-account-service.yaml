@@ -1,0 +1,21 @@
+releases:
+  - name: redis-user-account-service
+    chart: ../charts/redis
+    values:
+      - ../values/redis/user-account-service.yaml
+
+
+
+  - name: postgres-user-account-service
+    chart: ../charts/postgres
+    values:
+      - ../values/postgres/user-account-service.yaml
+
+
+  - name: user-account-service
+    chart: ../charts/MicroRide
+    values:
+      - ../values/microride/user-account-service.yaml
+
+
+

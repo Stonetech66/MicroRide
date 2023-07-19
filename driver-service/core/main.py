@@ -18,9 +18,12 @@ async def startup():
 async def shutdown():
     await database.disconnect()
 
+@app.get('/')
+async def app_probe():
+    return {'message':'success'}
 
 
-@app.post('/drivers')
+@app.post('/api/v1/drivers')
 async def create_driver_profile(schema:DriverCreate,user_id=Depends(get_current_user)):
     driver_id=str(uuid.uuid4())
     data= schema.dict()
@@ -34,7 +37,7 @@ async def create_driver_profile(schema:DriverCreate,user_id=Depends(get_current_
     return {'message':'driver profile sucessfuly created'}
 
 
-@app.get('/drivers/profile', response_model=DriverDetails)
+@app.get('/api/v1/drivers/profile', response_model=DriverDetails)
 async def get_driver_profile(user_id=Depends(get_current_user)):
     query= select(Driver).where(Driver.c.user_id==user_id)
     driver=await database.fetch_one(query)
@@ -42,14 +45,14 @@ async def get_driver_profile(user_id=Depends(get_current_user)):
         raise HTTPException(detail='user is not signed up as a driver', status_code=400)
     return driver
 
-@app.get('/drivers/{driver_id}', response_model=DriverDetails)
+@app.get('/api/v1/drivers/{driver_id}', response_model=DriverDetails)
 async def get_driver(driver_id:str, user_id=Depends(get_current_user)):
     query= select(Driver).where(Driver.c.user_id==user_id)
     driver=await database.fetch_one(query)
     return driver
 
 
-@app.get('/rides', response_model=list[RideDetails])
+@app.get('/api/v1/rides', response_model=list[RideDetails])
 async def get_driver_past_rides( user_id=Depends(get_current_user)):
     query= select(Ride).select_from(join(Ride,Driver, Driver.c.id==Ride.c.driver_id)).where(Driver.c.user_id==user_id,  or_(Ride.c.status==Ride_Status.canceled, Ride.c.status==Ride_Status.completed))
     rides=await database.fetch_all(query)

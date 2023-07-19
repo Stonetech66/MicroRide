@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.name }}
+  labels:
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+    - http:
+        paths:
+          {{- range .Values.services }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
+            backend:
+              service: 
+                name: {{ .svcName }}
+                port: 
+                  number: {{ .svcPort }}
+          {{- end }}
+

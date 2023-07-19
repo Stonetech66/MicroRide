@@ -16,8 +16,11 @@ async def startup():
 async def shutdown():
     await database.disconnect()
 
+@app.get('/')
+async def app_probe():
+    return {'message':'success'}
 
-@app.post('/payment/success/')
+@app.post('/api/v1/payment/success/')
 async def payment_success(schema:PaymentSchema):
     ride_query= select(Ride.c.id, Ride.c.paid, Ride.c.fare, Ride.c.user_id).where(Ride.c.id==schema.ride_id)
     ride= await database.fetch_one(ride_query)
@@ -32,7 +35,7 @@ async def payment_success(schema:PaymentSchema):
 
 
 
-@app.post('/payment/failed/')
+@app.post('/api/v1/payment/failed/')
 async def payment_failed(schema:PaymentSchema):
     ride_query= select(Ride.c.id, Ride.c.paid, Ride.c.fare, Ride.c.user_id).where(Ride.c.id==schema.ride_id)
     ride= await database.fetch_one(ride_query)

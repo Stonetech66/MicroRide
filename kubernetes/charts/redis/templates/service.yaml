@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "redis-{{ .Values.appName }}"
+spec:
+  ports:
+    - port: {{ .Values.servicePort }}
+      targetPort: {{ .Values.containerPort }}
+  selector:
+      app: "redis-{{ .Values.appName }}"

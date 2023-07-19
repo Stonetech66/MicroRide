@@ -1,0 +1,21 @@
+appName: driver-service
+replicaCount: 1
+isConsumer: true
+appType: consumer
+appScript: "./consumer.sh"
+appImage: stonetech66/micro-ride
+appVersion: driver-service
+containerEnvVars:
+- name: RABBITMQ_HOST
+  value: rabbitmq
+- name: RABBITMQ_PORT
+  value: "5672"
+- name: REDIS_HOST
+  value: "redis-driver-service:6379"
+- name: POSTGRES_HOST
+  value: postgres-driver-service
+- name: POSTGRES_PORT
+  value: "5432"
+secrets: 
+- name: postgres-driver-service
+- name: rabbitmq

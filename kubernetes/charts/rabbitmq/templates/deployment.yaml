@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.appName }}
+  labels:
+    app: {{ .Values.appName }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appName }}
+    spec:
+      containers:
+        - name: {{ .Values.appName }}
+          image: "{{ .Values.appImage }}:{{ .Values.appVersion }}"
+          ports:
+            - containerPort: {{ .Values.containerPort }}
+          envFrom:
+          - secretRef:
+                name: {{ .Values.appName }}
+          volumeMounts:
+          - name: "{{ .Values.appName }}-{{ .Values.volumeName }}"
+            mountPath: {{ .Values.mountPath }} 
+      volumes:
+      - name: "{{ .Values.appName }}-{{ .Values.volumeName }}"
+        emptyDir: {}
+
+

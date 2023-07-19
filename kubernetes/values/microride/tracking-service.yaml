@@ -1,0 +1,25 @@
+appName: tracking-service
+replicaCount: 1
+isConsumer: false
+appType: api
+appProbe: true
+appScript: "./server.sh"
+appImage: stonetech66/micro-ride
+appVersion: tracking-service
+secrets: true
+containerEnvVars:
+- name: RABBITMQ_HOST
+  value: rabbitmq
+- name: RABBITMQ_PORT
+  value: "5672"
+- name: MONGO_HOST
+  value: mongo-tracking-service
+- name: MONGO_PORT
+  value: "27017"
+- name: REDIS_HOST
+  value: "redis-tracking-service:6379"
+- name: VERIFY_TOKEN_URL
+  value: "user-account-service:8000/api/v1/verify-token"
+secrets: 
+- name: mongo-tracking-service
+- name: rabbitmq

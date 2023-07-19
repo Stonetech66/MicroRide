@@ -1,0 +1,26 @@
+appName: ride-service
+replicaCount: 1
+isConsumer: true
+appType: consumer
+appScript: "./consumer.sh"
+appImage: stonetech66/micro-ride
+appVersion: ride-service
+containerEnvVars:
+- name: RABBITMQ_HOST
+  value: rabbitmq
+- name: RABBITMQ_PORT
+  value: "5672"
+- name: POSTGRES_HOST
+  value: postgres-ride-service
+- name: POSTGRES_PORT
+  value: "5432"
+- name: REDIS_HOST
+  value: "redis-ride-service:6379"
+- name: NOTIFICATION_SERVICE_HOST
+  value: "notification-service:8000"
+appSecret:
+- key: WEBSOCKET_SECRET_KEY
+  value: IHN0b25l
+secrets: 
+- name: postgres-ride-service
+- name: rabbitmq

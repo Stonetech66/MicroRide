@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "postgres-{{ .Values.appName }}"
+  labels:
+      app: "postgres-{{ .Values.appName }}"
+      db: postgres
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: "postgres-{{ .Values.appName }}"
+      db: postgres
+  template:
+    metadata:
+      labels:
+        app: "postgres-{{ .Values.appName }}"
+        db: postgres
+    spec:
+      containers:
+      - name: "postgres-{{ .Values.appName }}"
+        image: "{{ .Values.postgresImage }}:{{ .Values.postgresVersion }}"
+        ports:
+        - containerPort: {{ .Values.containerPort }}
+        envFrom:
+          - secretRef:
+              name: "postgres-{{ .Values.appName }}"
+        volumeMounts:
+        - name: "{{ .Values.appName }}-{{ .Values.volumeName }}"
+          mountPath: {{ .Values.mountPath }} 
+      volumes:
+      - name: "{{ .Values.appName }}-{{ .Values.volumeName }}"
+        persistentVolumeClaim:
+          claimName: "postgres-{{ .Values.appName }}"
+
+            
+

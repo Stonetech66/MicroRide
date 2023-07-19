@@ -7,9 +7,11 @@ from .producers import publish_driver_arrived, publish_ride_in_transit, publish_
 app= FastAPI()
 
 
+@app.get('/')
+async def app_probe():
+    return {'message':'success'}
 
-
-@app.post('/rides/{ride_id}/completed/')
+@app.post('/api/v1/rides/{ride_id}/completed/')
 async def send_ride_completed(ride_id):
     ride=await ride_table.find_one({'id':ride_id})
     if not ride:
@@ -20,7 +22,7 @@ async def send_ride_completed(ride_id):
     await publish_ride_completed({'driver_id':ride['driver_id'], 'ride_id':ride['id'], 'user_id':ride['user_id']})
     return {'message':'success'}
 
-@app.post('/rides/{ride_id}/in-transit/')
+@app.post('/api/v1/rides/{ride_id}/in-transit/')
 async def send_ride_in_transit(ride_id):
     ride=await ride_table.find_one({'id':ride_id})
     if not ride:
@@ -31,7 +33,7 @@ async def send_ride_in_transit(ride_id):
     await publish_ride_in_transit({'driver_id':ride['driver_id'], 'ride_id':ride['id'], 'user_id':ride['user_id']})
     return {'message':'success'}
 
-@app.post('/rides/{ride_id}/driver-arrived')
+@app.post('/api/v1/rides/{ride_id}/driver-arrived')
 async def send_ride_driver_arrived(ride_id):
     ride=await ride_table.find_one({'id':ride_id})
     if not ride:

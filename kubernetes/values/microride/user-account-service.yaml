@@ -1,0 +1,26 @@
+appName: user-account-service
+replicaCount: 1
+isConsumer: false
+appType: api
+appProbe: true
+appScript: "./server.sh"
+appImage: stonetech66/micro-ride
+appVersion: user-account-service
+secrets: true
+containerEnvVars:
+- name: RABBITMQ_HOST
+  value: rabbitmq
+- name: RABBITMQ_PORT
+  value: "5672"
+- name: POSTGRES_HOST
+  value: postgres-user-account-service
+- name: POSTGRES_PORT
+  value: "5432"
+- name: REDIS_HOST
+  value: "redis-user-account-service:6379"
+appSecret:
+- key: SECRET_KEY
+  value: IHN0b25l
+secrets: 
+- name: postgres-user-account-service
+- name: rabbitmq

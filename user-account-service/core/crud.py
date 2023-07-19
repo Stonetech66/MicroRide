@@ -1,5 +1,4 @@
 from .models import User
-from .database import database
 from fastapi import HTTPException
 from sqlalchemy import select
 import uuid

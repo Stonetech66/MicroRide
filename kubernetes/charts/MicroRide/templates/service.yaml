@@ -1,0 +1,14 @@
+{{- if not .Values.isConsumer }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.appName }}
+spec:
+  selector:
+    app: {{ .Values.appName }}
+    type: {{ .Values.appType }}
+  ports:
+    - port: {{ .Values.servicePort }}
+      targetPort: {{ .Values.containerPort }}
+      protocol: TCP
+{{- end }}

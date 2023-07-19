@@ -37,7 +37,7 @@ def upgrade() -> None:
     sa.Column('pickup_location', sa.String(length=200), nullable=False),
     sa.Column('fare', sa.Float(), server_default='0.0', nullable=True),
     sa.Column('status', sa.Enum('completed', 'in_transit', 'canceled', 'confirmed', 'arrived', name='ride_status'), nullable=False),
-    sa.Column('paid', sa.Boolean(), server_default=sa.text('0'), nullable=True),
+    sa.Column('paid', sa.Boolean(), server_default='false', nullable=True),
     sa.Column('date', sa.TIMESTAMP(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
     sa.ForeignKeyConstraint(['driver_id'], ['drivers.id'], ),
     sa.PrimaryKeyConstraint('id')

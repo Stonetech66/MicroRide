@@ -1,0 +1,21 @@
+releases:
+  - name: redis-payment-service
+    chart: ../charts/redis
+    values:
+      - ../values/redis/payment-service.yaml
+
+  - name: postgres-payment-service
+    chart: ../charts/postgres
+    values:
+      - ../values/postgres/payment-service.yaml
+
+  - name: consumer-payment-service
+    chart: ../charts/MicroRide
+    values:
+      - ../values/consumer/payment-service.yaml
+
+
+  - name: payment-service
+    chart: ../charts/MicroRide
+    values:
+      - ../values/microride/payment-service.yaml

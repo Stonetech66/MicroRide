@@ -10,7 +10,8 @@ import os
 
 app= FastAPI()
 
-REDIS_URL= os.getenv('REDIS_URL')
+REDIS_HOST= os.getenv('REDIS_HOST')
+REDIS_URL= f'redis://{REDIS_HOST}'
 redis= None
 
 @app.on_event('startup')
@@ -31,13 +32,16 @@ async def shutdown():
 
 NOTIFICATION_SERVICE_URL=os.getenv('NOTIFICATION_SERVICE_URL')
 
+@app.get('/')
+async def app_probe():
+    return {'message':'success'}
 
-@app.get('/rides/', response_model=list[RideDetails])
+@app.get('/api/v1/rides/', response_model=list[RideDetails])
 async def get_past_rides(user_id=Depends(get_current_user) ):
     rides=await RideCrud.get_past_rides(database, user_id)
     return rides
 
-@app.get('/rides/{ride_id}', response_model=RideDetails)
+@app.get('/api/v1/rides/{ride_id}', response_model=RideDetails)
 async def get_past_ride(ride_id:str,  user_id=Depends(get_current_user)):
         ride= await RideCrud.get_ride_details(database, user_id, ride_id)
         if not ride:
@@ -45,7 +49,7 @@ async def get_past_ride(ride_id:str,  user_id=Depends(get_current_user)):
         return ride
 
 
-@app.post('/rides/')
+@app.post('/api/v1/rides/')
 async def find_ride(schema:RideBase,task:BackgroundTasks,  user_id=Depends(get_current_user), ):
     ride= await RideCrud.get_user_has_active_ride(database,user_id)
     if ride:
@@ -55,10 +59,10 @@ async def find_ride(schema:RideBase,task:BackgroundTasks,  user_id=Depends(get_c
     task.add_task(background_task_find_ride, redis, ride_data, user_id)
     return {
         'message':'connect to the websocket url to listen for ride events ride events',
-        'websocket_url':f'{NOTIFICATION_SERVICE_URL}/ride?token=jwt-credential',
+        'websocket_url':f'ws://{NOTIFICATION_SERVICE_URL}/ride?token=jwt-credential',
         }
 
-@app.post('/rides/{ride_id}/confirm')
+@app.post('/api/v1/rides/{ride_id}/confirm')
 async def confirm_ride(task:BackgroundTasks, ride_id:str,  user_id=Depends(get_current_user), ):
     ride_data= await redis.hgetall('ride-'+str(user_id))
     if not ride_data:
@@ -73,7 +77,7 @@ async def confirm_ride(task:BackgroundTasks, ride_id:str,  user_id=Depends(get_c
     return {'message':'ride confirmed', 'driver_id':driver_id}
 
 
-@app.post('/rides/{ride_id}/cancel')
+@app.post('/api/v1/rides/{ride_id}/cancel')
 async def cancel_ride(ride_id:str,task:BackgroundTasks,  user_id=Depends(get_current_user), ):
         fare, driver_id= await RideCrud.cancel_ride(database, user_id, ride_id)
         task.add_task(background_task_cancel_ride, {'ride_id':ride_id, 'fare':fare, 'driver_id':driver_id, 'user_id':user_id})

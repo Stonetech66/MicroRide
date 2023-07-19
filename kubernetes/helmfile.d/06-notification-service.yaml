@@ -1,0 +1,23 @@
+releases:
+  - name: redis-notification-service
+    chart: ../charts/redis
+    values:
+      - ../values/redis/notification-service.yaml
+
+
+  - name: mongo-notification-service
+    chart: ../charts/mongodb
+    values:
+      - ../values/mongo/notification-service.yaml
+
+
+  - name: consumer-notification-service
+    chart: ../charts/MicroRide
+    values:
+      - ../values/consumer/notification-service.yaml
+
+
+  - name: notification-service
+    chart: ../charts/MicroRide
+    values:
+      - ../values/microride/notification-service.yaml

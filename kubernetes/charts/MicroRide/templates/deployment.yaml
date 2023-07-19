@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  {{- if .Values.isConsumer }}
+  name: "consumer-{{ .Values.appName }}"
+  {{- else}}
+  name: {{ .Values.appName }}
+  {{- end}}
+  labels:
+    app: {{ .Values.appName }}
+    type: {{ .Values.appType }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}
+      type: {{ .Values.appType }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appName }}
+        type: {{ .Values.appType }}
+    spec:
+      containers:
+        - name: {{ .Values.appName }}
+          image: "{{ .Values.appImage }}:{{ .Values.appVersion }}"
+          command: ["sh",  "-c"]
+          args: [{{.Values.appScript}}]
+          ports:
+            - containerPort: {{ .Values.containerPort }}
+          {{- if  .Values.appProbe }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          {{- end }}
+          env:
+          {{- range .Values.containerEnvVars }}
+          - name: {{ .name }}
+            value: {{ .value | quote  }}
+          {{- end }}
+          {{- if  .Values.secrets }}
+          envFrom:
+          {{- range  .Values.secrets }}
+          - secretRef:
+              name: {{ .name }}
+          {{- end }}
+          {{- if .Values.appSecret }}
+          - secretRef:
+              name: {{ .Values.appName }}
+          {{- end}}
+          {{- end }}
+
+            
+
+

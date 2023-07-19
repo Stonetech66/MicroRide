@@ -1,0 +1,18 @@
+appName: rabbitmq
+replicaCount: 1
+appImage: rabbitmq
+appVersion: alpine
+containerPort: 5672
+servicePort: 5672
+volumeName: rabbitmq-data
+mountPath: /var/lib/rabbitmq
+secretVars:
+  - key: RABBITMQ_DEFAULT_USER
+    value: Z3Vlc3QK
+  - key: RABBITMQ_DEFAULT_PASS
+    value: Z3Vlc3QK
+containerEnvVars:
+- name: RABBITMQ_HOST
+  value: rabbitmq
+- name: RABBITMQ_PORT
+  value: "5672"

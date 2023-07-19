@@ -23,11 +23,15 @@ async def startup():
 async def shutdown():
     await database.disconnect()
 
-@app.get("/user", response_model=schema.UserDetails)
+@app.get('/')
+async def app_probe():
+    return {'message':'success'}
+
+@app.get("/api/v1/user", response_model=schema.UserDetails)
 async def user_details(user:dict=Depends(get_current_user)):
     return user
 
-@app.post('/login', response_model=schema.LoginDetails)
+@app.post('/api/v1/login', response_model=schema.LoginDetails)
 async def login(login:schema.Login,Authorize:AuthJWT=Depends()):
 
     password, email=login.password, login.email
@@ -37,7 +41,7 @@ async def login(login:schema.Login,Authorize:AuthJWT=Depends()):
     return {'access_token':access_token, 'refresh_token':refresh_token, 'user':user}
 
 
-@app.post('/signup', summary='endpoint for users to signup', status_code=201)
+@app.post('/api/v1/signup', summary='endpoint for users to signup', status_code=201)
 async def signup(user:schema.Signup, Authorize:AuthJWT=Depends()):
 
     if  await UserCrud.get_user_by_email(database, user.email):
@@ -52,7 +56,7 @@ async def signup(user:schema.Signup, Authorize:AuthJWT=Depends()):
 
 
 
-@app.post('/refresh-token')
+@app.post('/api/v1/refresh-token')
 def refresh_token(Authorization:AuthJWT=Depends(), refresh_token:str=Cookie(default=None), Bearer:str=Header(default=None)):
     exception=HTTPException(status_code=401, detail='invalid refresh token or token has expired')
     try:
@@ -65,12 +69,12 @@ def refresh_token(Authorization:AuthJWT=Depends(), refresh_token:str=Cookie(defa
     except:
         raise exception
     
-@app.post('/logout')
+@app.post('/api/v1/logout')
 def logout(Authorize:AuthJWT=Depends()):
     Authorize.unset_jwt_cookies()
     return {'message':'successfully logout'}
 
-@app.post('/verify-token')
+@app.post('/api/v1/verify-token')
 def verify_token(Authorization:AuthJWT=Depends()):
     exception=HTTPException(status_code=401, detail='invalid refresh token or token has expired')
     try:

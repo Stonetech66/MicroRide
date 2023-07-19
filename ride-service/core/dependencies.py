@@ -1,4 +1,4 @@
-from fastapi import Depends,  HTTPException, Header, WebSocket, WebSocketDisconnect
+from fastapi import Depends,  HTTPException
 from fastapi.security import HTTPBearer
 import aiohttp
 import asyncio
@@ -7,8 +7,10 @@ import aioredis
 from datetime import datetime, timezone
 import os
 
-USER_ACCOUNT_SERVICE= os.getenv('USER_ACCOUNT_SERVICE_URL')
-AUTH_URL= f'{USER_ACCOUNT_SERVICE}/verify-token'
+AUTH_URL= os.getenv('VERIFY_TOKEN_URL')
+REDIS_HOST=os.getenv('REDIS_HOST')
+
+
 
 async def validate_token_in_redis(redis, token):
     jwt=await redis.get(f'auth-{token}')
@@ -21,7 +23,7 @@ async def validate_token_in_redis(redis, token):
 
 async def get_current_user(Authorization=Depends(HTTPBearer()), ):
     exception=HTTPException(status_code=401, detail='invalid access token or access token has expired', headers={'WWW-Authenticate': 'Bearer'})
-    redis= await  aioredis.from_url('redis://localhost', decode_responses=True)
+    redis= await  aioredis.from_url(f'redis://{REDIS_HOST}', decode_responses=True)
     try:
         user_id=await validate_token_in_redis(redis, Authorization.credentials)
         if user_id:

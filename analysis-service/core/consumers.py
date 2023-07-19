@@ -7,7 +7,12 @@ from functools import partial
 import os
 
 
-RABBITMQ_URL= os.getenv('RABBITMQ_URL')
+RABBITMQ_HOST= os.getenv('RABBITMQ_HOST')
+RABBITMQ_PORT= os.getenv('RABBITMQ_PORT')
+RABBITMQ_USER= os.getenv('RABBITMQ_DEFAULT_USER')
+RABBITMQ_PASS= os.getenv('RABBITMQ_DEFAULT_PASS')
+
+RABBITMQ_URL= f'amqp://{RABBITMQ_USER}:{RABBITMQ_PASS}@{RABBITMQ_HOST}:{RABBITMQ_PORT}/'
 
 async def ride_consumer_callback(channel, message):
     async with message.process():

@@ -1,0 +1,2 @@
+cd kubernetes
+helmfile destroy

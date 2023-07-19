@@ -4,6 +4,16 @@ from .dependencies import get_current_websocket_user, get_current_websocket_driv
 
 
 app= FastAPI()
+from fastapi.middleware.cors import CORSMiddleware
+app=FastAPI(prefix='/v1', tags=["auth"])
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_credentials=True,
+    allow_methods=['*']      
+    )
+
 html2 = """
 <!DOCTYPE html>
 <html>
@@ -17,8 +27,8 @@ html2 = """
         <script>
             const url= new URLSearchParams(window.location.search);
             const token= url.get('token')
-            console.log(token)
-            var ws = new WebSocket("ws://localhost:8003/ws/ride/?token="+token);
+            const host= window.location.host
+            var ws = new WebSocket("ws://"+host+"/notification/api/v1/ws/ride/?token="+token);
             ws.onmessage = function(event) {
                 var messages = document.getElementById('messages')
                 var message = document.createElement('li')
@@ -50,8 +60,8 @@ html = """
         <script>
             const url= new URLSearchParams(window.location.search);
             const token= url.get('token')
-            console.log(token)
-            var ws = new WebSocket("ws://localhost:8003/ws/driver/?token="+token);
+            const host= window.location.host
+            var ws = new WebSocket("ws://"+host+"/notification/api/v1/ws/driver/?token="+token);
             ws.onmessage = function(event) {
                 var messages = document.getElementById('messages')
                 var message = document.createElement('li')
@@ -70,6 +80,10 @@ html = """
     </body>
     </html>"""
 
+@app.get('/')
+async def app_probe():
+    return {'message':'success'}
+
 @app.get("/driver")
 async def get():
     return HTMLResponse(html)
@@ -78,7 +92,7 @@ async def get():
 async def get():
     return HTMLResponse(html2)
 
-@app.websocket('/ws/ride/')
+@app.websocket('/api/v1/ws/ride/')
 async def websocket_user_ride_notfication( websocket_auth=Depends(get_current_websocket_user)):
     websocket= websocket_auth
     try:
@@ -89,7 +103,7 @@ async def websocket_user_ride_notfication( websocket_auth=Depends(get_current_we
 
 
 
-@app.websocket('/ws/driver/')
+@app.websocket('/api/v1/ws/driver/')
 async def websocket_driver_ride_notfication(websocket_auth=Depends(get_current_websocket_driver)):
     websocket= websocket_auth
     try:

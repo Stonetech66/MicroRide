@@ -1,0 +1,9 @@
+appName: analysis-service
+replicaCount: 1
+isConsumer: true
+appType: consumer
+appScript: "./consumer.sh"
+appImage: stonetech66/micro-ride
+appVersion: analysis-service
+
+

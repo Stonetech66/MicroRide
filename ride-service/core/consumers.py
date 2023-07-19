@@ -9,14 +9,20 @@ from datetime import datetime
 from functools import partial
 import os
 
-NOTIFICATION_SERVICE_URL=os.getenv('NOTIFICATION_SERVICE_URL')
+RABBITMQ_HOST= os.getenv('RABBITMQ_HOST')
+RABBITMQ_PORT= os.getenv('RABBITMQ_PORT')
+RABBITMQ_USER= os.getenv('RABBITMQ_DEFAULT_USER')
+RABBITMQ_PASSWORD= os.getenv('RABBITMQ_DEFAULT_PASS')
+
+RABBITMQ_URL= f'amqp://{RABBITMQ_USER}:{RABBITMQ_PASSWORD}@{RABBITMQ_HOST}:{RABBITMQ_PORT}/'
+
+NOTIFICATION_SERVICE_HOST=os.getenv('NOTIFICATION_SERVICE_HOST')
 WEBSOCKET_SECRET_KEY=os.getenv('WEBSOCKET_SECRET_KEY')
-RABBITMQ_URL= os.getenv('RABBITMQ_URL')
-REDIS_URL= os.getenv('REDIS_URL')
+REDIS_HOST= os.getenv('REDIS_HOST')
 
 async def send_websocket_data(user_id, data):
         time=datetime.now()
-        async with websockets.connect(NOTIFICATION_SERVICE_URL+f'/ws/ride/?type=server&token={WEBSOCKET_SECRET_KEY}') as websocket:
+        async with websockets.connect(f'ws://{NOTIFICATION_SERVICE_HOST}/api/v1/ws/ride/?type=server&token={WEBSOCKET_SECRET_KEY}') as websocket:
             await websocket.send(json.dumps(data))
         
         
@@ -67,7 +73,7 @@ async def consumer()-> None:
     try:
         async with connection:
             channel= await connection.channel()
-            redis= await aioredis.from_url(REDIS_URL, decode_responses=True)
+            redis= await aioredis.from_url(f'redis://{REDIS_HOST}', decode_responses=True)
 
 
             analysis_events= await channel.declare_exchange('analysis-events', ExchangeType.TOPIC,)

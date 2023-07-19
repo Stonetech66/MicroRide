@@ -1,0 +1,2 @@
+cd kubernetes
+helmfile  sync

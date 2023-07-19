@@ -1,0 +1,20 @@
+releases:
+  - name: redis-tracking-service
+    chart: ../charts/redis
+    values:
+      - ../values/redis/tracking-service.yaml
+
+  - name: mongo-tracking-service
+    chart: ../charts/mongodb
+    values:
+      - ../values/mongo/tracking-service.yaml
+
+  - name: consumer-tracking-service
+    chart: ../charts/MicroRide
+    values:
+      - ../values/consumer/tracking-service.yaml
+
+  - name: tracking-service
+    chart: ../charts/MicroRide
+    values:
+      - ../values/microride/tracking-service.yaml

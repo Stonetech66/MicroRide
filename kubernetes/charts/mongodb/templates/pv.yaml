@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: "postgres-{{ .Values.appName }}"
+  labels:
+    app: "postgres-{{ .Values.appName }}"
+spec:
+  storageClassName: {{ .Values.StorageClassName }}
+  capacity:
+    storage: {{ .Values.appStorage }}
+  accessModes:
+    - {{ .Values.accessMode }}
+  hostPath:
+    path: /data/mongo

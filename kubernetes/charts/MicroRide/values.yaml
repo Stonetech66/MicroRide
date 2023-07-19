@@ -1,0 +1,9 @@
+containerPort: 8000
+appVersion: latest
+secrets: false
+servicePort: 8000
+containerEnvVars:
+- name: MICRO_RIDE
+  value: MICRO_RIDE
+appProbe: false
+appSecret: null

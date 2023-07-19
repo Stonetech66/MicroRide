@@ -1,0 +1,9 @@
+replicaCount: 1
+containerPort: 6379
+redisImage: redis
+redisVersion: alpine
+volumeName: redis-data
+mountPath: /data
+servicePort: 6379
+
+
