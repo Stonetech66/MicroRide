@@ -5,9 +5,11 @@ releases:
       - ../values/redis/tracking-service.yaml
 
   - name: mongo-tracking-service
-    chart: ../charts/mongodb
+    chart: bitnami/mongodb
     values:
       - ../values/mongo/tracking-service.yaml
+    wait: true
+
 
   - name: consumer-tracking-service
     chart: ../charts/MicroRide
@@ -17,4 +19,4 @@ releases:
   - name: tracking-service
     chart: ../charts/MicroRide
     values:
-      - ../values/microride/tracking-service.yaml
+     - ../values/microride/tracking-service.yaml

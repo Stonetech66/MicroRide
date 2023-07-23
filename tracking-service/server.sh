@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 cd /app/
 
@@ -8,4 +8,4 @@ alembic upgrade head
 
 echo "starting tracking service server"
 
-uvicorn core.main:app --host 0.0.0.0
+uvicorn core.main:app --host 0.0.0.0 --root-path $ROOT_PATH

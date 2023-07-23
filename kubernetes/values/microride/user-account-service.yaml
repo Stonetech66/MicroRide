@@ -6,14 +6,27 @@ appProbe: true
 appScript: "./server.sh"
 appImage: stonetech66/micro-ride
 appVersion: user-account-service
-secrets: true
+otherSecrets:
+- name: POSTGRES_PASSWORD
+  secretName: postgres-user-account-service-postgresql
+  secretKey: postgres-password
 containerEnvVars:
+- name: ROOT_PATH
+  value: /users
 - name: RABBITMQ_HOST
   value: rabbitmq
 - name: RABBITMQ_PORT
   value: "5672"
+- name: RABBITMQ_DEFAULT_USER
+  value: guest
+- name: RABBITMQ_DEFAULT_PASS
+  value: guest
 - name: POSTGRES_HOST
-  value: postgres-user-account-service
+  value: postgres-user-account-service-postgresql
+- name: POSTGRES_USER
+  value: postgres
+- name: POSTGRES_DB
+  value: postgres
 - name: POSTGRES_PORT
   value: "5432"
 - name: REDIS_HOST
@@ -21,6 +34,4 @@ containerEnvVars:
 appSecret:
 - key: SECRET_KEY
   value: IHN0b25l
-secrets: 
-- name: postgres-user-account-service
-- name: rabbitmq
+

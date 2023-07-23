@@ -1,1 +1,3 @@
-appName: driver-service
+postgesqlUsername: postgres
+postgesqlPassword: postgres
+postgesqlDatabase: postgres

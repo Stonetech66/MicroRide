@@ -30,7 +30,7 @@ async def shutdown():
 
 
 
-NOTIFICATION_SERVICE_URL=os.getenv('NOTIFICATION_SERVICE_URL')
+NOTIFICATION_SERVICE_HOST=os.getenv('NOTIFICATION_SERVICE_HOST')
 
 @app.get('/')
 async def app_probe():
@@ -59,7 +59,7 @@ async def find_ride(schema:RideBase,task:BackgroundTasks,  user_id=Depends(get_c
     task.add_task(background_task_find_ride, redis, ride_data, user_id)
     return {
         'message':'connect to the websocket url to listen for ride events ride events',
-        'websocket_url':f'ws://{NOTIFICATION_SERVICE_URL}/ride?token=jwt-credential',
+        'websocket_url':f'ws://{NOTIFICATION_SERVICE_HOST}/ride?token=jwt-credential',
         }
 
 @app.post('/api/v1/rides/{ride_id}/confirm')
@@ -67,7 +67,7 @@ async def confirm_ride(task:BackgroundTasks, ride_id:str,  user_id=Depends(get_c
     ride_data= await redis.hgetall('ride-'+str(user_id))
     if not ride_data:
         raise HTTPException(detail='ride not found', status_code=404)
-    ride_data.update({'id':ride_data['ride_id']})
+    ride_data.update({'id':ride_data['ride_id'], 'fee':float(ride_data['fee'])})
     ride_data.pop('ride_id')
     driver_id= ride_data.get('driver_id')
     if driver_id == 'no drivers':

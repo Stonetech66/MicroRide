@@ -5,5 +5,14 @@ appType: consumer
 appScript: "./consumer.sh"
 appImage: stonetech66/micro-ride
 appVersion: analysis-service
+containerEnvVars:
+- name: RABBITMQ_HOST
+  value: rabbitmq
+- name: RABBITMQ_PORT
+  value: "5672"
+- name: RABBITMQ_DEFAULT_USER
+  value: guest
+- name: RABBITMQ_DEFAULT_PASS
+  value: guest
 
 

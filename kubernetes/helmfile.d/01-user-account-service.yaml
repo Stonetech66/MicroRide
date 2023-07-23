@@ -1,3 +1,7 @@
+repositories:
+- name: bitnami
+  url: https://charts.bitnami.com/bitnami
+
 releases:
   - name: redis-user-account-service
     chart: ../charts/redis
@@ -7,10 +11,10 @@ releases:
 
 
   - name: postgres-user-account-service
-    chart: ../charts/postgres
+    chart: bitnami/postgresql
     values:
       - ../values/postgres/user-account-service.yaml
-
+    wait: true
 
   - name: user-account-service
     chart: ../charts/MicroRide

@@ -10,12 +10,21 @@ containerEnvVars:
   value: rabbitmq
 - name: RABBITMQ_PORT
   value: "5672"
+- name: RABBITMQ_DEFAULT_USER
+  value: guest
+- name: RABBITMQ_DEFAULT_PASS
+  value: guest
 - name: REDIS_HOST
   value: "redis-driver-service:6379"
 - name: POSTGRES_HOST
-  value: postgres-driver-service
+  value: postgres-driver-service-postgresql
+- name: POSTGRES_USER
+  value: postgres
+- name: POSTGRES_DB
+  value: postgres
 - name: POSTGRES_PORT
   value: "5432"
-secrets: 
-- name: postgres-driver-service
-- name: rabbitmq
+otherSecrets:
+- name: POSTGRES_PASSWORD
+  secretName: postgres-driver-service-postgresql
+  secretKey: postgres-password

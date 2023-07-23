@@ -10,14 +10,23 @@ containerEnvVars:
   value: rabbitmq
 - name: RABBITMQ_PORT
   value: "5672"
+- name: RABBITMQ_DEFAULT_USER
+  value: guest
+- name: RABBITMQ_DEFAULT_PASS
+  value: guest
 - name: POSTGRES_HOST
-  value: postgres-payment-service
+  value: postgres-payment-service-postgresql
+- name: POSTGRES_USER
+  value: postgres
+- name: POSTGRES_DB
+  value: postgres
 - name: POSTGRES_PORT
   value: "5432"
 - name: REDIS_URL
   value: "redis-payment-service:6379"
 - name: NOTIFICATION_SERVICE_HOST
   value: "notification-service:8000"
-secrets: 
-- name: postgres-payment-service
-- name: rabbitmq
+otherSecrets:
+- name: POSTGRES_PASSWORD
+  secretName: postgres-payment-service-postgresql
+  secretKey: postgres-password

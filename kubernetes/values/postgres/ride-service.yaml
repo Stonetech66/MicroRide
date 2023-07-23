@@ -1,1 +1,3 @@
-appName: ride-service
+postgesqlUsername: postgres
+postgesqlPassword: postgres
+postgesqlDatabase: postgres

@@ -10,14 +10,26 @@ containerEnvVars:
   value: rabbitmq
 - name: RABBITMQ_PORT
   value: "5672"
+- name: RABBITMQ_DEFAULT_USER
+  value: guest
+- name: RABBITMQ_DEFAULT_PASS
+  value: guest
 - name: REDIS_HOST
   value: "redis-notification-service:6379"
 - name: NOTIFICATION_SERVICE_HOST
   value: "notification-service:8000"
 - name: VERIFY_TOKEN_URL
   value: "user-account-service:8000"
+- name: MONGO_HOST
+  value: mongo-notification-service-mongodb
+- name: MONGO_PORT
+  value: "27017"
+- name: MONGO_ROOT_USERNAME
+  value: root
 appSecret:
 - key: WEBSOCKET_SECRET_KEY
-  value: IHN0b25l
-secrets: 
-- name: rabbitmq
+  value: websocketsecret
+otherSecrets:
+- name: MONGO_ROOT_PASSWORD
+  secretName: mongo-notification-service-mongodb
+  secretKey: mongodb-root-password

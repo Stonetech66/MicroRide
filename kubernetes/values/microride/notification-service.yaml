@@ -7,21 +7,32 @@ appScript: "./server.sh"
 appImage: stonetech66/micro-ride
 appVersion: notification-service
 containerEnvVars:
+- name: ROOT_PATH
+  value: /notification
 - name: RABBITMQ_HOST
   value: rabbitmq
 - name: RABBITMQ_PORT
   value: "5672"
+- name: RABBITMQ_DEFAULT_USER
+  value: guest
+- name: RABBITMQ_DEFAULT_PASS
+  value: guest
 - name: REDIS_HOST
   value: "redis-notification-service:6379"
 - name: NOTIFICATION_SERVICE_HOST
-  value: "notification-service:8000"
+  value: "notification-service:8000/notification"
 - name: VERIFY_TOKEN_URL
-  value: "user-account-service:8000/api/v1/verify-token"
+  value: "http://user-account-service:8000/api/v1/verify-token"
 - name: MONGO_HOST
   value: mongo-notification-service
 - name: MONGO_PORT
   value: "27017"
-secrets: 
-- name: rabbitmq
-- name: mongo-notification-service
-- name: notification-service
+- name: MONGO_ROOT_USERNAME
+  value: root
+otherSecrets:
+- name: MONGO_ROOT_PASSWORD
+  secretName: mongo-notification-service-mongodb
+  secretKey: mongodb-root-password
+- name: WEBSOCKET_SECRET_KEY
+  secretName: notification-service
+  secretKey: WEBSOCKET_SECRET_KEY

@@ -7,20 +7,32 @@ appScript: "./server.sh"
 appImage: stonetech66/micro-ride
 appVersion: ride-service
 containerEnvVars:
+- name: ROOT_PATH
+  value: /rides
 - name: RABBITMQ_HOST
   value: rabbitmq
 - name: RABBITMQ_PORT
   value: "5672"
+- name: RABBITMQ_DEFAULT_USER
+  value: guest
+- name: RABBITMQ_DEFAULT_PASS
+  value: guest
 - name: POSTGRES_HOST
-  value: postgres-ride-service
+  value: postgres-ride-service-postgresql
+- name: POSTGRES_USER
+  value: postgres
+- name: POSTGRES_DB
+  value: postgres
 - name: POSTGRES_PORT
   value: "5432"
 - name: REDIS_HOST
   value: "redis-ride-service:6379"
 - name: VERIFY_TOKEN_URL
-  value: "user-account-service:8000/api/v1/verify-token"
+  value: "http://user-account-service:8000/api/v1/verify-token"
 - name: NOTIFICATION_SERVICE_HOST
   value: "notification-service:8000"
-secrets: 
-- name: postgres-ride-service
-- name: rabbitmq
+otherSecrets:
+- name: POSTGRES_PASSWORD
+  secretName: postgres-ride-service-postgresql
+  secretKey: postgres-password
+

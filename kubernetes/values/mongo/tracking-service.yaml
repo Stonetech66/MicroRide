@@ -1,1 +1,2 @@
-appName: tracking-service
+rootPassword: mongo
+rootUsername: mongo

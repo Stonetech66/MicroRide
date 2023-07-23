@@ -6,6 +6,8 @@ metadata:
     app: {{ .Values.appName }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  strategy: 
+    type: Recreate
   selector:
     matchLabels:
       app: {{ .Values.appName }}
@@ -19,9 +21,6 @@ spec:
           image: "{{ .Values.appImage }}:{{ .Values.appVersion }}"
           ports:
             - containerPort: {{ .Values.containerPort }}
-          envFrom:
-          - secretRef:
-                name: {{ .Values.appName }}
           volumeMounts:
           - name: "{{ .Values.appName }}-{{ .Values.volumeName }}"
             mountPath: {{ .Values.mountPath }} 

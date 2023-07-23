@@ -7,18 +7,30 @@ appScript: "./server.sh"
 appImage: stonetech66/micro-ride
 appVersion: payment-service
 containerEnvVars:
+- name: ROOT_PATH
+  value: /payment
 - name: RABBITMQ_HOST
   value: rabbitmq
 - name: RABBITMQ_PORT
   value: "5672"
+- name: RABBITMQ_DEFAULT_USER
+  value: guest
+- name: RABBITMQ_DEFAULT_PASS
+  value: guest
 - name: POSTGRES_HOST
-  value: postgres-payment-service
+  value: postgres-payment-service-postgresql
+- name: POSTGRES_USER
+  value: postgres
+- name: POSTGRES_DB
+  value: postgres
 - name: POSTGRES_PORT
   value: "5432"
 - name: REDIS_HOST
   value: "redis-payment-service:6379"
 - name: VERIFY_TOKEN_URL
-  value: "user-account-service:8000/api/v1/verify-token"
-secrets: 
-- name: postgres-payment-service
-- name: rabbitmq
+  value: "http://user-account-service:8000/api/v1/verify-token"
+otherSecrets:
+- name: POSTGRES_PASSWORD
+  secretName: postgres-payment-service-postgresql
+  secretKey: postgres-password
+

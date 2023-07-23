@@ -4,8 +4,10 @@ metadata:
   name: {{ .Values.name }}
   labels:
   annotations:
-    ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
+  ingressClassName: nginx
   rules:
     - http:
         paths:

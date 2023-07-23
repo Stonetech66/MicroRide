@@ -1,4 +1,4 @@
-#!/usr/bin/env 
+#!/bin/sh
 cd /app/
 
 echo "starting analysis service consumer >>>"

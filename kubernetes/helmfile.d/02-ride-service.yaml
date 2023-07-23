@@ -1,4 +1,6 @@
 releases:
+
+
   - name: redis-ride-service
     chart: ../charts/redis
     values:
@@ -7,9 +9,10 @@ releases:
 
 
   - name: postgres-ride-service
-    chart: ../charts/postgres
+    chart: bitnami/postgresql
     values:
       - ../values/postgres/ride-service.yaml
+    wait: true
 
 
   - name: consumer-ride-service
@@ -18,8 +21,9 @@ releases:
       - ../values/consumer/ride-service.yaml
 
 
-
   - name: ride-service
     chart: ../charts/MicroRide
     values:
       - ../values/microride/ride-service.yaml
+
+

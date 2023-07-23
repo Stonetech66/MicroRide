@@ -1,1 +1,3 @@
-appName: payment-service
+postgesqlUsername: postgres
+postgesqlPassword: postgres
+postgesqlDatabase: postgres

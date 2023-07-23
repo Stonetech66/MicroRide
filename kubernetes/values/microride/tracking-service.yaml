@@ -6,20 +6,28 @@ appProbe: true
 appScript: "./server.sh"
 appImage: stonetech66/micro-ride
 appVersion: tracking-service
-secrets: true
 containerEnvVars:
+- name: ROOT_PATH
+  value: /tracking
 - name: RABBITMQ_HOST
   value: rabbitmq
 - name: RABBITMQ_PORT
   value: "5672"
+- name: RABBITMQ_DEFAULT_USER
+  value: guest
+- name: RABBITMQ_DEFAULT_PASS
+  value: guest
 - name: MONGO_HOST
   value: mongo-tracking-service
 - name: MONGO_PORT
   value: "27017"
+- name: MONGO_ROOT_USERNAME
+  value: root
 - name: REDIS_HOST
   value: "redis-tracking-service:6379"
 - name: VERIFY_TOKEN_URL
-  value: "user-account-service:8000/api/v1/verify-token"
-secrets: 
-- name: mongo-tracking-service
-- name: rabbitmq
+  value: "http://user-account-service:8000/api/v1/verify-token"
+otherSecrets:
+- name: MONGO_ROOT_PASSWORD
+  secretName: mongo-notification-service-mongodb
+  secretKey: mongodb-root-password

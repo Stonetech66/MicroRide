@@ -1,1 +1,3 @@
-appName: user-account-service
+postgesqlUsername: postgres
+postgesqlPassword: postgres
+postgesqlDatabase: postgres

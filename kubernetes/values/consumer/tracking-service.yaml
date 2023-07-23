@@ -10,12 +10,19 @@ containerEnvVars:
   value: rabbitmq
 - name: RABBITMQ_PORT
   value: "5672"
+- name: RABBITMQ_DEFAULT_USER
+  value: guest
+- name: RABBITMQ_DEFAULT_PASS
+  value: guest
 - name: MONGO_HOST
-  value: mongo-tracking-service
+  value: mongo-tracking-service-mongodb
 - name: MONGO_PORT
   value: "27017"
+- name: MONGO_ROOT_USERNAME
+  value: root
 - name: REDIS_HOST
   value: "redis-tracking-service:6379"
-secrets: 
-- name: mongo-tracking-service
-- name: rabbitmq
+otherSecrets:
+- name: MONGO_ROOT_PASSWORD
+  secretName: mongo-tracking-service-mongodb
+  secretKey: mongodb-root-password

@@ -32,28 +32,32 @@ spec:
           livenessProbe:
             httpGet:
               path: /
-              port: http
+              port: {{ .Values.containerPort }}
           readinessProbe:
             httpGet:
               path: /
-              port: http
+              port: {{ .Values.containerPort }}
           {{- end }}
           env:
           {{- range .Values.containerEnvVars }}
           - name: {{ .name }}
             value: {{ .value | quote  }}
           {{- end }}
-          {{- if  .Values.secrets }}
-          envFrom:
-          {{- range  .Values.secrets }}
-          - secretRef:
-              name: {{ .name }}
+          {{- if .Values.otherSecrets }}
+          {{- range .Values.otherSecrets }}
+          - name: {{ .name }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .secretName }}
+                key: {{ .secretKey }}
+          {{- end }}
           {{- end }}
           {{- if .Values.appSecret }}
+          envFrom:
           - secretRef:
               name: {{ .Values.appName }}
           {{- end}}
-          {{- end }}
+
 
             
 

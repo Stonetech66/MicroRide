@@ -11,16 +11,25 @@ containerEnvVars:
 - name: RABBITMQ_PORT
   value: "5672"
 - name: POSTGRES_HOST
-  value: postgres-ride-service
+  value: postgres-ride-service-postgresql
+- name: POSTGRES_USER
+  value: postgres
+- name: POSTGRES_DB
+  value: postgres
 - name: POSTGRES_PORT
   value: "5432"
 - name: REDIS_HOST
   value: "redis-ride-service:6379"
 - name: NOTIFICATION_SERVICE_HOST
   value: "notification-service:8000"
-appSecret:
-- key: WEBSOCKET_SECRET_KEY
-  value: IHN0b25l
-secrets: 
-- name: postgres-ride-service
-- name: rabbitmq
+- name: RABBITMQ_DEFAULT_USER
+  value: guest
+- name: RABBITMQ_DEFAULT_PASS
+  value: guest
+otherSecrets:
+- name: POSTGRES_PASSWORD
+  secretName: postgres-ride-service-postgresql
+  secretKey: postgres-password
+- name: WEBSOCKET_SECRET_KEY
+  secretName: notification-service
+  secretKey: WEBSOCKET_SECRET_KEY
