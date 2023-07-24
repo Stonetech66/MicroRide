@@ -12,4 +12,4 @@ class PasswordManager:
         return cls.pwd_hash.verify(plain_password, hashed_password)
     
 
-password_manager=PasswordManager
+password_manager=PasswordManager()
