@@ -20,7 +20,7 @@ services:
     pathType: Prefix
     svcName: tracking-service
     svcPort: 8000
-  - path: /payment-servive(/|$)(.*)
+  - path: /payment-service(/|$)(.*)
     pathType: Prefix
     svcName: payment-service
     svcPort: 8000
