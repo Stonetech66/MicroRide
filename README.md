@@ -44,3 +44,76 @@ MicroRide is a cutting-edge and scalable microservice application that showcases
 - **Helm Charts and Helmfile**: Helmfile and Helm charts are utilized to manage the Kubernetes deployments of the microservices,simplifying service management and scalability.
   
 - **Kubernetes:** The services are deployed and orchestrated using Kubernetes, facilitating easy scaling and management.
+
+## 💫 Running MicroRide
+
+To run the MicroRide project follow these simple steps:
+
+### Prerequisites
+
+1. [Helm](https://helm.sh/docs/intro/install/ ) and [Helmfile](https://github.com/roboll/helmfile#installation): Make sure you have Helm and Helmfile installed on your local machine.
+
+2. [Kubernetes Cluster](https://kubernetes.io/docs/setup/): Set up a Kubernetes cluster locally or use any Kubernetes cluster that you can access.
+
+3. [Nginx Ingress Controller](https://kubernetes.github.io/ingress-nginx/deploy/): Ensure that you have an Nginx Ingress Controller deployed in your Kubernetes cluster.
+
+### Step 1: Clone the Repository
+
+Clone the MicroRide repository to your local machine:
+
+```
+git clone https://github.com/your-username/MicroRide.git
+cd MicroRide
+```
+
+### Step 2: Start MicroRide Services
+
+In the project directory, run the start script to deploy all services:
+
+```
+./start.sh
+```
+
+### Step 3: Port Forwarding (Local Setup Only)
+
+If you are running MicroRide locally, you need to port forward to the Ingress Controller to access the services. Execute the following command:
+
+```
+kubectl port-forward svc/nginx-ingress-controller 8080:80
+```
+
+### Step 3: Get External IP(Online Setup Only)
+If you are running MicroRide on an online Kubernetes cluster, get the external IP of the Ingress Controller by running:
+```
+kubectl get service ingress-nginx-controller --namespace=ingress-nginx
+```
+
+### Step 4: Accessing the API Docs
+
+Documentation for each service can be accessed at the following URLs:
+
+**Locally (using localhost):**
+ - User Account Service API Docs: `http://localhost:8080/user-account-service/docs`
+- Driver Service API Docs: `http://localhost:8080/driver-service/docs`
+- Ride Service API Docs: `http://localhost:8080/ride-service/docs`
+- Payment Service API Docs: `http://localhost:8080/payment-service/docs`
+- Tracking Service API Docs: `http://localhost:8080/tracking-service/docs`
+- Notification Service API Docs: `http://localhost:8080/notification-service/docs`
+
+**Online (using external IP):**
+  - User Account Service Docs: `http://EXTERNAL_IP/user-account-service/docs`
+  - Driver Service API Docs: `http://EXTERNAL_IP/driver-service/docs`
+  - Ride Service API Docs: `http://EXTERNAL_IP/ride-service/docs`
+  - Payment Service API Docs: `http://EXTERNAL_IP/payment-service/docs`
+  - Tracking Service API Docs: `http://EXTERNAL_IP/tracking-service/docs`
+  - Notification Service API Docs: `http://EXTERNAL_IP/notification-service/docs`
+
+Replace `EXTERNAL_IP` with the actual external IP of the Nginx Ingress Controller.
+
+### Step 4: Stop MicroRide Services
+
+To stop all services and clean up the deployment, run the end script:
+
+```
+./end.sh
+```
