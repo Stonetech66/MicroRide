@@ -1,5 +1,5 @@
 <h1 align="center">MicroRide</h1>
-MicroRide is a cutting-edge and scalable microservice application that showcases a robust implementation of distributed systems and the effective utilization of modern technologies. Designed as a simplified ride application, MicroRide demonstrates key architectural patterns and seamless integration with various tools. 
+MicroRide is a cutting-edge and scalable microservice application that showcases a robust implementation of distributed systems and the effective utilization of modern technologies. Designed as a simplified ride application, MicroRide demonstrates key architectural patterns and seamless integration with various tools. Developed as a hands-on project to learn building microservice applications, MicroRide encompasses essential features while providing insights into future enhancements.
 
 ## 🚀 Key Features
 
