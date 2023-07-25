@@ -3,7 +3,7 @@ MicroRide is a cutting-edge and scalable microservice application that exemplifi
 
 ## 🚀 Key Features
 
-- **Microservices Architecture:** MicroRide follows a microservices architecture, ensuring the system's scalability, modularity, and maintainability. Each service is designed with a specific responsibility, making it easy to scale individual components independently.
+- **Microservice Architecture:** MicroRide follows a microservice architecture, ensuring the system's scalability, modularity, and maintainability. Each service is designed with a specific responsibility, making it easy to scale individual components independently.
 
 - **Asynchronous Communication:** The application leverages RabbitMQ, a robust message broker, to enable asynchronous communication between services. This promotes loose coupling and enhances overall system performance.
 
