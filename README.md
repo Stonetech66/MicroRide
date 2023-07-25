@@ -13,7 +13,7 @@ MicroRide is a cutting-edge and scalable microservice application that showcases
 
 - **Real-time Notifications**: The notification-service employs websockets to deliver real-time notifications to both drivers and users. Whether it's ride cancellations, ride confirmations, driver arrivals, or ride completions, MicroRide ensures timely updates and seamless user experience.
 
-## 📚 Services Overview
+## 📋 Services Overview
 
 1. **User Account Service:** Responsible for user registration, login, and authentication. It securely stores user credentials and provides a jwt-token-based authentication mechanism.
 
