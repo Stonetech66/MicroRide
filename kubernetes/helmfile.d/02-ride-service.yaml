@@ -1,11 +1,8 @@
 releases:
-
-
   - name: redis-ride-service
     chart: ../charts/redis
     values:
       - ../values/redis/ride-service.yaml
-
 
 
   - name: postgres-ride-service

@@ -5,10 +5,10 @@ releases:
       - ../values/redis/payment-service.yaml
 
   - name: postgres-payment-service
-    chart: bitnami/postgres
+    chart: bitnami/postgresql
     values:
       - ../values/postgres/payment-service.yaml
-     wait: true
+    wait: true
 
   - name: consumer-payment-service
     chart: ../charts/MicroRide

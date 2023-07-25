@@ -9,7 +9,6 @@ releases:
       - ../values/redis/user-account-service.yaml
 
 
-
   - name: postgres-user-account-service
     chart: bitnami/postgresql
     values:

@@ -11,13 +11,13 @@ releases:
       - ../values/mongo/notification-service.yaml
     wait: true
 
-   - name: consumer-notification-service
+  - name: consumer-notification-service
      chart: ../charts/MicroRide
      values:
        - ../values/consumer/notification-service.yaml
 
 
-   - name: notification-service
+  - name: notification-service
      chart: ../charts/MicroRide
      values:
       - ../values/microride/notification-service.yaml

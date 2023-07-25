@@ -67,7 +67,7 @@ async def confirm_ride(task:BackgroundTasks, ride_id:str,  user_id=Depends(get_c
     ride_data= await redis.hgetall('ride-'+str(user_id))
     if not ride_data:
         raise HTTPException(detail='ride not found', status_code=404)
-    ride_data.update({'id':ride_data['ride_id'], 'fee':float(ride_data['fee'])})
+    ride_data.update({'id':ride_data['ride_id'], 'fare':float(ride_data['fare'])})
     ride_data.pop('ride_id')
     driver_id= ride_data.get('driver_id')
     if driver_id == 'no drivers':
