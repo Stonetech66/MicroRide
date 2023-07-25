@@ -59,7 +59,7 @@ async def find_ride(schema:RideBase,task:BackgroundTasks,  user_id=Depends(get_c
     task.add_task(background_task_find_ride, redis, ride_data, user_id)
     return {
         'message':'connect to the websocket url to listen for ride events ride events',
-        'websocket_url':f'ws://{NOTIFICATION_SERVICE_HOST}/ride?token=jwt-credential',
+        'websocket_url':'/notification/ride?token=jwt-credential',
         }
 
 @app.post('/api/v1/rides/{ride_id}/confirm')
