@@ -1,26 +1,26 @@
 name: micro-ride-nginx
 services:
-  - path: /users(/|$)(.*)
+  - path: /user-account-service(/|$)(.*)
     pathType: Prefix
     svcName: user-account-service
     svcPort: 8000
-  - path: /rides(/|$)(.*)
+  - path: /ride-service(/|$)(.*)
     pathType: Prefix
     svcName: ride-service
     svcPort: 8000
-  - path: /drivers(/|$)(.*) 
+  - path: /driver-service(/|$)(.*) 
     pathType: Prefix
     svcName: driver-service
     svcPort: 8000
-  - path: /notification(/|$)(.*)
+  - path: /notification-service(/|$)(.*)
     pathType: Prefix
     svcName: notification-service
     svcPort: 8000
-  - path: /tracking(/|$)(.*) 
+  - path: /tracking-service(/|$)(.*) 
     pathType: Prefix
     svcName: tracking-service
     svcPort: 8000
-  - path: /payment(/|$)(.*)
+  - path: /payment-servive(/|$)(.*)
     pathType: Prefix
     svcName: payment-service
     svcPort: 8000
