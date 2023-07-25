@@ -24,7 +24,7 @@ containerEnvVars:
 - name: VERIFY_TOKEN_URL
   value: "http://user-account-service:8000/api/v1/verify-token"
 - name: MONGO_HOST
-  value: mongo-notification-service
+  value: mongo-notification-service-mongodb
 - name: MONGO_PORT
   value: "27017"
 - name: MONGO_ROOT_USERNAME
