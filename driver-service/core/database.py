@@ -10,5 +10,5 @@ DATABASE_URL= f'postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}
 
 database= databases.Database(DATABASE_URL) 
 
-engine= sqlalchemy.create_engine(DATABASE_URL,)
+
 

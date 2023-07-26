@@ -10,5 +10,5 @@ POSTGRES_PORT= os.getenv('POSTGRES_PORT')
 DATABASE_URL= f'postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}'
 database= databases.Database(DATABASE_URL) 
 
-engine= sqlalchemy.create_engine(DATABASE_URL,)
+
 
