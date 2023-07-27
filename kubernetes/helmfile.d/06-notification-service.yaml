@@ -12,12 +12,12 @@ releases:
     wait: true
 
   - name: consumer-notification-service
-     chart: ../charts/MicroRide
-     values:
+    chart: ../charts/MicroRide
+    values:
        - ../values/consumer/notification-service.yaml
 
 
   - name: notification-service
-     chart: ../charts/MicroRide
-     values:
+    chart: ../charts/MicroRide
+    values:
       - ../values/microride/notification-service.yaml

@@ -22,7 +22,7 @@ REDIS_HOST= os.getenv('REDIS_HOST')
 
 async def send_websocket_data(user_id, data):
         time=datetime.now()
-        async with websockets.connect(f'ws://{NOTIFICATION_SERVICE_HOST}/api/v1/ws/ride/?type=server&token={WEBSOCKET_SECRET_KEY}') as websocket:
+        async with websockets.connect(f'ws://{NOTIFICATION_SERVICE_HOST}/api/v1/ws/user/?type=server&token={WEBSOCKET_SECRET_KEY}') as websocket:
             await websocket.send(json.dumps(data))
         
         
@@ -41,7 +41,7 @@ async def analysis_consumer_callback(redis, message):
 async def tracking_consumer_callback(redis, message):
     async with message.process():
         data= json.loads(message.body)
-        if message.routing_key == 'tracking.ride.driver':
+        if message.routing_key == 'tracking.ride.nearest_driver':
             user_id=str(data['user_id'])
             ride_id=await redis.hget('ride-'+user_id, 'ride_id')
             if ride_id == data['ride_id']:

@@ -8,7 +8,7 @@ appImage: stonetech66/micro-ride
 appVersion: ride-service
 containerEnvVars:
 - name: ROOT_PATH
-  value: /rides
+  value: /ride-service
 - name: RABBITMQ_HOST
   value: rabbitmq
 - name: RABBITMQ_PORT

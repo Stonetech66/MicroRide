@@ -2,6 +2,7 @@ import websockets
 import json 
 import os
 from fastapi import WebSocket
+from .utils import update_user_websocket_event, update_driver_websocket_event
 
 NOTIFICATION_SERVICE_HOST=os.getenv('NOTIFICATION_SERVICE_HOST')
 
@@ -14,13 +15,19 @@ class WebsocketManager :
         self.user_connections={}
         self.driver_connections={}
         
-    async def connect_user(self, websocket:WebSocket,user_id:str, ):
+    async def connect_user(self, websocket:WebSocket,user_id:str, redis):
         self.user_connections.update({user_id:websocket})
         await websocket.send_json({'message':'connected', 'status_code':200})
+        current_data= await redis.get(f'user-current-websocket-data-{user_id}')
+        if current_data:
+            await websocket.send_json(json.loads(current_data))
     
-    async def connect_driver(self, websocket:WebSocket,driver_id:str, ):
+    async def connect_driver(self, websocket:WebSocket,driver_id:str, redis):
         self.driver_connections.update({driver_id:websocket})
         await websocket.send_json({'message':'connected', 'status_code':200})
+        current_data= await redis.get(f'driver-current-websocket-data-{driver_id}')
+        if current_data:
+            await websocket.send_json(json.loads(current_data))
 
     async def disconnect_user(self, websocket, user_id):
         await websocket.close()
@@ -56,13 +63,15 @@ class WebsocketManager :
 
 
 
-async def send_user_websocket_data(user_id, event, data):
+async def send_user_websocket_data(user_id, event, data, redis):
         data.update({'event':event})
-        async with websockets.connect(f'ws://{NOTIFICATION_SERVICE_HOST}/api/v1/ws/ride/?token={WEBSOCKET_SECRET_KEY}&type=server') as websocket:
+        async with websockets.connect(f'ws://{NOTIFICATION_SERVICE_HOST}/api/v1/ws/user/?token={WEBSOCKET_SECRET_KEY}&type=server') as websocket:
             await websocket.send(json.dumps(data))
+        await update_user_websocket_event(redis, data, user_id)
 
 
-async def send_driver_websocket_data(driver_id, event, data):
+async def send_driver_websocket_data( driver_id, event, data, redis,):
         data.update({'event':event})
         async with websockets.connect(f'ws://{NOTIFICATION_SERVICE_HOST}/api/v1/ws/driver/?token={WEBSOCKET_SECRET_KEY}&type=server') as websocket:
             await websocket.send(json.dumps(data))
+        await update_driver_websocket_event(redis, data, driver_id)

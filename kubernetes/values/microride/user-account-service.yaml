@@ -12,7 +12,7 @@ otherSecrets:
   secretKey: postgres-password
 containerEnvVars:
 - name: ROOT_PATH
-  value: /users
+  value: /user-account-service
 - name: RABBITMQ_HOST
   value: rabbitmq
 - name: RABBITMQ_PORT

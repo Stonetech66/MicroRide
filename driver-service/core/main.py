@@ -3,9 +3,9 @@ from .dependencies import get_current_user
 from sqlalchemy import select, join, or_
 import uuid
 from .database import database
-from .models import Driver, Ride, Ride_Status
-from .schema import DriverCreate, DriverDetails, RideDetails
-from .producers import publish_driver_created
+from .models import Driver, Ride, Ride_Status, Driver_Status
+from .schema import DriverCreate, DriverDetails, RideDetails, UpdateStatus
+from .producers import publish_driver_created, publish_driver_status_updated
 app= FastAPI()
 
 
@@ -32,7 +32,6 @@ async def create_driver_profile(schema:DriverCreate,user_id=Depends(get_current_
         await database.execute(query)
     except:
         raise HTTPException(detail='user already has a driver profile', status_code=400)
-    data.update({'birth_date':str(data['birth_date'])})
     await publish_driver_created({**data, 'id':driver_id, 'user_id':user_id})
     return {'message':'driver profile sucessfuly created'}
 
@@ -57,3 +56,12 @@ async def get_driver_past_rides( user_id=Depends(get_current_user)):
     query= select(Ride).select_from(join(Ride,Driver, Driver.c.id==Ride.c.driver_id)).where(Driver.c.user_id==user_id,  or_(Ride.c.status==Ride_Status.canceled, Ride.c.status==Ride_Status.completed))
     rides=await database.fetch_all(query)
     return rides
+
+@app.put('/api/v1/status')
+async def update_driver_status(driver_status:UpdateStatus, user_id=Depends(get_current_user), ):
+    query= Driver.update().where(Driver.c.user_id==user_id).values(status=driver_status.status)
+    driver=await database.execute(query)
+    if driver:
+       await publish_driver_status_updated({'user_id':user_id, 'status':driver_status.status})
+       return {'message':'status updated successfully'}
+    raise  HTTPException(detail='user is not signed up as a driver', status_code=400)

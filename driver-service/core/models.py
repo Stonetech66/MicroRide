@@ -4,21 +4,29 @@ import enum
 metadata=MetaData()
 
 
+class Driver_Status(str,enum.Enum):
+    available= 'available'
+    unavailable= 'unavailable'
+    in_transit= 'in-transit'
+
+
+
 Driver=Table(
     'drivers',
     metadata,
     Column('id', String(36), primary_key=True),
-    Column('user_id',Integer, unique=True),
+    Column('user_id',String(36), unique=True, nullable=False),
     Column('profile_pic',String(40), nullable=True),
     Column('bio',String(100), nullable=True),
     Column('country',String(100), nullable=True),
     Column('state',String(100), nullable=True),
-    Column('birth_date',Date, nullable=True),
+    Column('status',Enum(Driver_Status), server_default='unavailable' ),
     Column('date',TIMESTAMP(timezone=True), server_default=func.now()) ,
+
 )
 
 
-class Ride_Status(enum.Enum):
+class Ride_Status(str, enum.Enum):
     completed= 'completed'
     in_transit= 'in-transit'
     canceled= 'canceled'

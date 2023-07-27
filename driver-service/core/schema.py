@@ -2,8 +2,8 @@ from pydantic import BaseModel
 from typing import Union
 from uuid import UUID
 from datetime import date
-from .models import Ride_Status
-
+from .models import Ride_Status, Driver_Status
+from enum import Enum
 
 
 
@@ -24,12 +24,15 @@ class RideDetails(BaseModel):
 class DriverCreate(BaseModel):
     country: str
     state: str
-    birth_date:date
     bio: Union[str, None]
+
 
     
 class DriverDetails(DriverCreate):
     id:str
     user_id:str
+    status: Driver_Status
 
 
+class UpdateStatus(BaseModel):
+   status:Driver_Status

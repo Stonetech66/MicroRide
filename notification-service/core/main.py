@@ -18,7 +18,7 @@ html2 = """
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Chat</title>
+        <title>USER RIDE EVENTS</title>
     </head>
     <body>
         <h1>USER RIDE EVENTS</h1>
@@ -28,7 +28,7 @@ html2 = """
             const url= new URLSearchParams(window.location.search);
             const token= url.get('token')
             const host= window.location.host
-            var ws = new WebSocket("ws://"+host+"/notification/api/v1/ws/ride/?token="+token);
+            var ws = new WebSocket("ws://"+host+"/notification-service/api/v1/ws/user/?token="+token);
             ws.onmessage = function(event) {
                 var messages = document.getElementById('messages')
                 var message = document.createElement('li')
@@ -51,7 +51,7 @@ html = """
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Chat</title>
+        <title>DRIVER RIDE EVENTS</title>
     </head>
     <body>
 <h1>DRIVER RIDE EVENTS</h1>
@@ -61,7 +61,7 @@ html = """
             const url= new URLSearchParams(window.location.search);
             const token= url.get('token')
             const host= window.location.host
-            var ws = new WebSocket("ws://"+host+"/notification/api/v1/ws/driver/?token="+token);
+            var ws = new WebSocket("ws://"+host+"/notification-service/api/v1/ws/driver/?token="+token);
             ws.onmessage = function(event) {
                 var messages = document.getElementById('messages')
                 var message = document.createElement('li')
@@ -92,7 +92,7 @@ async def get():
 async def get():
     return HTMLResponse(html2)
 
-@app.websocket('/api/v1/ws/ride/')
+@app.websocket('/api/v1/ws/user/')
 async def websocket_user_ride_notfication( websocket_auth=Depends(get_current_websocket_user)):
     websocket= websocket_auth
     try:

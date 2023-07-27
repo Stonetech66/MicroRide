@@ -48,11 +48,11 @@ async def get_current_websocket_user(token:str,websocket:WebSocket, type:str=Non
             redis= await  aioredis.from_url(REDIS_URL, decode_responses=True)
             user_id=await connections.validate_token_in_redis(redis, token)
             if user_id:
-                await connections.connect_user(websocket, user_id)
+                await connections.connect_user(websocket, user_id, redis)
                 return websocket
             user_id= await validate_credentials_auth_service(redis, token)
             if user_id:
-                await connections.connect_user(websocket, user_id)
+                await connections.connect_user(websocket, user_id, redis)
                 return websocket
             await websocket.send_json(err_msg)
             await websocket.close()
@@ -85,7 +85,7 @@ async def get_current_websocket_driver(token:str,websocket:WebSocket, type:str=N
             if user_id:
                 driver=await driver_table.find_one({'user_id':user_id})
                 if driver:
-                    await connections.connect_driver(websocket, driver['id'])
+                    await connections.connect_driver(websocket, driver['id'], redis)
                     return websocket
                 await websocket.send_json({'message':'you are not registered as a driver', 'status_code':403})
                 await websocket.close()
@@ -97,7 +97,7 @@ async def get_current_websocket_driver(token:str,websocket:WebSocket, type:str=N
                     await websocket.send_json({'message':'you are not registered as a driver', 'status_code':403})
                     await websocket.close()
                     return 
-                await connections.connect_driver(websocket, driver['id'])
+                await connections.connect_driver(websocket, driver['id'], redis)
                 return websocket
             await websocket.send_json(err_msg)
             await websocket.close()

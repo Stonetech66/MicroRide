@@ -8,7 +8,7 @@ appImage: stonetech66/micro-ride
 appVersion: payment-service
 containerEnvVars:
 - name: ROOT_PATH
-  value: /payment
+  value: /payment-service
 - name: RABBITMQ_HOST
   value: rabbitmq
 - name: RABBITMQ_PORT

@@ -45,7 +45,7 @@ async def get_past_rides(user_id=Depends(get_current_user) ):
 async def get_past_ride(ride_id:str,  user_id=Depends(get_current_user)):
         ride= await RideCrud.get_ride_details(database, user_id, ride_id)
         if not ride:
-             raise HTTPException(detail='ride no found', status_code=404)
+             raise HTTPException(detail='ride not found', status_code=404)
         return ride
 
 
@@ -67,11 +67,13 @@ async def confirm_ride(task:BackgroundTasks, ride_id:str,  user_id=Depends(get_c
     ride_data= await redis.hgetall('ride-'+str(user_id))
     if not ride_data:
         raise HTTPException(detail='ride not found', status_code=404)
-    ride_data.update({'id':ride_data['ride_id'], 'fare':float(ride_data['fare'])})
-    ride_data.pop('ride_id')
     driver_id= ride_data.get('driver_id')
     if driver_id == 'no drivers':
-        return {'message':'no driver found'}
+        return {'message':'no driver available'}
+    elif not driver_id:
+        return {'message':'still locating driver try again'}
+    ride_data.update({'id':ride_data.get('ride_id'), 'fare':float(ride_data.get('fare'))})
+    ride_data.pop('ride_id')
     await RideCrud.create_ride(database, ride_data)
     task.add_task(background_task_confirm_ride, redis, ride_data, user_id )
     return {'message':'ride confirmed', 'driver_id':driver_id}

@@ -1,8 +1,8 @@
 """added drivers table
 
-Revision ID: 406cbebc5895
+Revision ID: 447c2fc15a92
 Revises: 
-Create Date: 2023-07-06 02:46:44.924949
+Create Date: 2023-07-26 00:36:41.183724
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '406cbebc5895'
+revision = '447c2fc15a92'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -25,9 +25,10 @@ def upgrade() -> None:
     sa.Column('bio', sa.String(length=100), nullable=True),
     sa.Column('country', sa.String(length=100), nullable=True),
     sa.Column('state', sa.String(length=100), nullable=True),
-    sa.Column('birth_date', sa.Date(), nullable=True),
+    sa.Column('status', sa.Enum('available', 'in_transit', 'unavailable', name='driver_status'), nullable=False, server_default='unavailable'),
     sa.Column('date', sa.TIMESTAMP(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
     sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('user_id')
     )
     op.create_table('rides',
     sa.Column('id', sa.String(length=36), nullable=False),

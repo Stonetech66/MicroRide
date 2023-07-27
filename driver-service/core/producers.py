@@ -32,3 +32,7 @@ async def publish_driver_created(driver_data:dict):
 
 
 
+async def publish_driver_status_updated(driver_data:dict):
+    channel= await get_channel()
+    ride_events= await channel.declare_exchange('driver-events', ExchangeType.TOPIC,)
+    await ride_events.publish(Message(json.dumps(driver_data).encode()), routing_key='driver.status.updated')

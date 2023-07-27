@@ -40,7 +40,7 @@ async def publish_ride_completed(ride_data:dict):
     ride_events= await channel.declare_exchange('tracking-events', ExchangeType.TOPIC,)
     await ride_events.publish(Message(json.dumps(ride_data).encode()), routing_key='tracking.ride.completed')
 
-async def publish_closest_driver(channel, ride_data:dict):
+async def publish_nearest_driver(channel, ride_data:dict):
     ride_events= await channel.declare_exchange('tracking-events', ExchangeType.TOPIC,)
-    await ride_events.publish(Message(json.dumps(ride_data).encode()), routing_key='tracking.ride.driver')
+    await ride_events.publish(Message(json.dumps(ride_data).encode()), routing_key='tracking.ride.nearest_driver')
 

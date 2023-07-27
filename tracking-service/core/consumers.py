@@ -1,8 +1,8 @@
 import asyncio 
 import json
 from aio_pika import connect, ExchangeType
-from .producers import publish_closest_driver
-from .utils import get_closest_driver
+from .producers import publish_nearest_driver
+from .utils import get_nearest_driver
 from .database import ride_table, driver_table
 from functools import partial
 import os
@@ -23,9 +23,9 @@ async def ride_consumer_callback(channel, message):
         elif message.routing_key == 'ride.canceled':
             await ride_table.update_one({'id':data['ride_id'], '$set':{'status':'canceled'}})
         elif message.routing_key == 'ride.find.driver':
-            driver=await get_closest_driver(data['pickup_location'])
+            driver=await get_nearest_driver(data['pickup_location'])
             data.update({'driver_id':driver})
-            await publish_closest_driver(channel, data)
+            await publish_nearest_driver(channel, data)
 
 
 async def driver_consumer_callback( message):
@@ -33,6 +33,8 @@ async def driver_consumer_callback( message):
         data=json.loads(message.body)
         if message.routing_key == 'driver.created':
             await driver_table.insert_one(data)
+        elif message.routing_key == 'driver.status.updated':
+            await driver_table.update_one({'user_id':data['user_id'], '$set':{'status':data['status']}})
 
 
 async def consumer()-> None:
