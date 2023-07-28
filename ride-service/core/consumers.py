@@ -74,6 +74,7 @@ async def consumer()-> None:
         async with connection:
             channel= await connection.channel()
             redis= await aioredis.from_url(f'redis://{REDIS_HOST}', decode_responses=True)
+            await database.connect()
 
 
             analysis_events= await channel.declare_exchange('analysis-events', ExchangeType.TOPIC,)
@@ -97,6 +98,7 @@ async def consumer()-> None:
         await channel.close()
         await connection.close()
         await redis.close()
+        await database.disconnect()
 
 
             

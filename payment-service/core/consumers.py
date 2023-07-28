@@ -28,6 +28,7 @@ async def consumer()-> None:
     try: 
         connection= await connect(RABBITMQ_URL)
         async with connection:
+            await database.connect()
             channel= await connection.channel()
             ride_events= await channel.declare_exchange('ride-events', ExchangeType.TOPIC)
             ride_queue= await channel.declare_queue('payment-service-queue-ride', durable=True)
@@ -44,6 +45,7 @@ async def consumer()-> None:
     finally:
         await channel.close()
         await connection.close()
+        await database.disconnect()
 
 
 if __name__ == '__main__':
