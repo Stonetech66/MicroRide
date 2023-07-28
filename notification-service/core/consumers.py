@@ -6,6 +6,8 @@ from .database import driver_table
 from .websockets import send_driver_websocket_data, send_user_websocket_data
 import os
 from functools import partial
+from .utils import update_user_websocket_event
+
 
 RABBITMQ_HOST= os.getenv('RABBITMQ_HOST')
 RABBITMQ_PORT= os.getenv('RABBITMQ_PORT')
@@ -42,6 +44,8 @@ async def ride_consumer_callback( redis, message):
         driver_id=data['driver_id']
         if message.routing_key == 'ride.confirmed':
             await send_driver_websocket_data(str(driver_id), 'ride-confirmed', data, redis)
+            data.update({'event':'ride-confirmed'})
+            await update_user_websocket_event(redis, data, data['user_id'])
         elif message.routing_key == 'ride.canceled':
             await send_driver_websocket_data(str(driver_id), 'ride-canceled', data, redis)
 
