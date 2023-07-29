@@ -51,7 +51,7 @@ async def consumer()-> None:
 
             driver_events= await channel.declare_exchange('driver-events', ExchangeType.TOPIC)
             driver_queue= await channel.declare_queue('tracking-queue-events', durable=True)
-            await driver_queue.bind(driver_events, routing_key='driver.created.#')
+            await driver_queue.bind(driver_events, routing_key='driver.*')
 
 
             await ride_queue.consume(partial(ride_consumer_callback, channel))
