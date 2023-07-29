@@ -6,6 +6,9 @@ import json
 import aioredis
 from datetime import datetime, timezone
 import os
+from .database import database
+from .models import Driver
+from sqlalchemy import select
 
 AUTH_URL= os.getenv('VERIFY_TOKEN_URL')
 REDIS_HOST=os.getenv('REDIS_HOST')
@@ -41,4 +44,12 @@ async def get_current_user(Authorization=Depends(HTTPBearer()), ):
     except asyncio.TimeoutError:
         raise HTTPException(status_code=500, detail='server error an error occured', headers={'WWW-Authenticate': 'Bearer'})
    
+
+async def get_user_is_driver(user_id=Depends(get_current_user), ):
+    exception=HTTPException(detail='user is not signed up as a driver', status_code=400)
+    query= select(Driver).where(Driver.c.user_id==user_id)
+    driver=await database.fetch_one(query)
+    if not driver:
+        raise exception
+    return driver
 

@@ -14,7 +14,7 @@ app.add_middleware(
     allow_methods=['*']      
     )
 
-html2 = """
+user_html = """
 <!DOCTYPE html>
 <html>
     <head>
@@ -47,7 +47,7 @@ html2 = """
     </body>
     </html>"""
 
-html = """
+driver_html = """
 <!DOCTYPE html>
 <html>
     <head>
@@ -86,11 +86,11 @@ async def app_probe():
 
 @app.get("/driver")
 async def get():
-    return HTMLResponse(html)
+    return HTMLResponse(driver_html)
 
-@app.get("/ride")
+@app.get("/user")
 async def get():
-    return HTMLResponse(html2)
+    return HTMLResponse(user_html)
 
 @app.websocket('/api/v1/ws/user/')
 async def websocket_user_ride_notfication( websocket_auth=Depends(get_current_websocket_user)):

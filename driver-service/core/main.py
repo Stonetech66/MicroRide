@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException
-from .dependencies import get_current_user
+from .dependencies import get_current_user, get_user_is_driver
 from sqlalchemy import select, join, or_
 import uuid
 from .database import database
@@ -37,31 +37,26 @@ async def create_driver_profile(schema:DriverCreate,user_id=Depends(get_current_
 
 
 @app.get('/api/v1/drivers/profile', response_model=DriverDetails)
-async def get_driver_profile(user_id=Depends(get_current_user)):
-    query= select(Driver).where(Driver.c.user_id==user_id)
-    driver=await database.fetch_one(query)
-    if not driver:
-        raise HTTPException(detail='user is not signed up as a driver', status_code=400)
+async def get_driver_profile(driver=Depends(get_user_is_driver)):
     return driver
 
 @app.get('/api/v1/drivers/{driver_id}', response_model=DriverDetails)
-async def get_driver(driver_id:str, user_id=Depends(get_current_user)):
-    query= select(Driver).where(Driver.c.user_id==user_id)
+async def get_driver(driver_id:str,):
+    query= select(Driver).where(Driver.c.id==driver_id)
     driver=await database.fetch_one(query)
     return driver
 
 
 @app.get('/api/v1/rides', response_model=list[RideDetails])
-async def get_driver_past_rides( user_id=Depends(get_current_user)):
+async def get_driver_past_rides( user_id=Depends(get_current_user), driver=Depends(get_user_is_driver)):
     query= select(Ride).select_from(join(Ride,Driver, Driver.c.id==Ride.c.driver_id)).where(Driver.c.user_id==user_id,  or_(Ride.c.status==Ride_Status.canceled, Ride.c.status==Ride_Status.completed))
     rides=await database.fetch_all(query)
     return rides
 
 @app.put('/api/v1/status')
-async def update_driver_status(driver_status:UpdateStatus, user_id=Depends(get_current_user), ):
-    query= Driver.update().where(Driver.c.user_id==user_id).values(status=driver_status.status)
-    driver=await database.execute(query)
-    if driver:
-       await publish_driver_status_updated({'user_id':user_id, 'status':driver_status.status})
-       return {'message':'status updated successfully'}
-    raise  HTTPException(detail='user is not signed up as a driver', status_code=400)
+async def update_driver_status(driver_status:UpdateStatus, driver=Depends(get_user_is_driver)):
+    query= Driver.update().where(Driver.c.id==driver.id).values(status=driver_status.status)
+    await database.execute(query)
+    await publish_driver_status_updated({'user_id':driver.user_id, 'status':driver_status.status})
+    return {'message':'status updated successfully'}
+
