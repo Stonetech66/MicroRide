@@ -9,3 +9,12 @@ alembic upgrade head
 echo "starting ride service server"
 
 uvicorn core.main:app --host 0.0.0.0 --root-path $ROOT_PATH
+
+
+
+
+
+
+
+
+

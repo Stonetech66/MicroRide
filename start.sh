@@ -1,3 +1,5 @@
-#!/bin/sh
+#!/usr/bin/sh
 cd kubernetes
 helmfile  sync
+
+
