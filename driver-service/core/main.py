@@ -32,7 +32,7 @@ async def create_driver_profile(schema:DriverCreate,user_id=Depends(get_current_
         await database.execute(query)
     except:
         raise HTTPException(detail='user already has a driver profile', status_code=400)
-    await publish_driver_created({**data, 'id':driver_id, 'user_id':user_id})
+    await publish_driver_created({**data, 'id':driver_id, 'user_id':user_id, 'status':'unavailable'})
     return {'message':'driver profile sucessfuly created'}
 
 
