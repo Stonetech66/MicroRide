@@ -34,7 +34,7 @@ async def driver_consumer_callback( message):
         if message.routing_key == 'driver.created':
             await driver_table.insert_one(data)
         elif message.routing_key == 'driver.status.updated':
-            await driver_table.update_one({'user_id':data['user_id'], '$set':{'status':data['status']}})
+            await driver_table.update_one({'user_id':data['user_id']}, {'$set':{'status':data['status']}})
 
 
 async def consumer()-> None:
@@ -51,7 +51,8 @@ async def consumer()-> None:
 
             driver_events= await channel.declare_exchange('driver-events', ExchangeType.TOPIC)
             driver_queue= await channel.declare_queue('tracking-queue-events', durable=True)
-            await driver_queue.bind(driver_events, routing_key='driver.*')
+            await driver_queue.bind(driver_events, routing_key='driver.created.#')
+            await driver_queue.bind(driver_events, routing_key='driver.status.updated.#')
 
 
             await ride_queue.consume(partial(ride_consumer_callback, channel))

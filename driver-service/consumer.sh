@@ -5,5 +5,3 @@ echo "starting driver service consumer >>>"
 
 python -m core.consumers
 
-
-

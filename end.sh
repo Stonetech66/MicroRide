@@ -2,5 +2,3 @@
 cd kubernetes
 helmfile destroy
 
-
-

@@ -13,7 +13,3 @@ python -m core.consumers
 
 
 
-
-
-
-

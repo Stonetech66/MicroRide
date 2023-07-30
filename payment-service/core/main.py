@@ -5,6 +5,7 @@ from sqlalchemy import select
 from .models import Payment, Ride
 from .schema import PaymentSchema
 
+
 app= FastAPI()
 
 @app.on_event('startup')
@@ -26,10 +27,11 @@ async def payment_success(schema:PaymentSchema):
     ride= await database.fetch_one(ride_query)
     if not ride:
          raise HTTPException(detail='ride not found', status_code=404)
-    if ride.paid== True:
-        raise HTTPException(detail='ride already paid for', status_code=400)
     query= Payment.insert().values(ride_id=schema.ride_id, amount=ride.fare, user_id=ride.user_id)
-    await database.execute(query)
+    try:
+        await database.execute(query)
+    except:
+        return {'message':'ride already paid for'}
     await publish_payment_success({**schema.dict(), 'user_id':ride.user_id, 'driver_id': ride.driver_id, 'amount':ride.fare})
     return {'message':'payment successful'}
 
