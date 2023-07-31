@@ -1,12 +1,12 @@
 <h1 align="center">MicroRide</h1>
-MicroRide is a scalable microservice application that showcases a robust implementation of distributed systems and the effective utilization of modern technologies. Designed as a simplified ride application, MicroRide demonstrates key architectural patterns and seamless integration with various tools. Developed as a hands-on project to learn building microservice applications, MicroRide encompasses essential features while providing insights into future enhancements.
+MicroRide is a scalable microservice application that showcases a robust implementation of distributed systems and the effective utilization of modern technologies in an event-driven architecture. Designed as a simplified ride application, MicroRide demonstrates key architectural patterns and seamless integration with various tools. Developed as a hands-on project to learn building microservice applications, MicroRide encompasses essential features while providing insights into future enhancements.
 
 ## 🚀 Key Features
 
 - **Microservice Architecture:** MicroRide follows a microservice architecture, ensuring the system's scalability, modularity, and maintainability. Each service is designed with a specific responsibility, making it easy to scale individual components independently.
 
-- **Asynchronous Communication:** The application leverages RabbitMQ, a robust message broker, to enable asynchronous communication between services. This promotes loose coupling and enhances overall system performance.
-
+- **Asynchronous Communication:** The application leverages RabbitMQ, a robust message broker, to enable asynchronous communication between services.
+  
 - **Efficient Data Storage:** MicroRide uses a combination of relational and NoSQL databases to suit different service requirements. PostgreSQL handles user-account-service,driver-service, payment-service,and ride-service, while MongoDB handles the tracking-service. Redis is utilized as a temporary data store to enhance response time and to improve overall user experience.
 
 - **Authentication and Authorization:** The user-account-service provides a secure and reliable authentication and authorization mechanism. By validating user credentials and storing them in Redis, the application optimizes subsequent requests, reducing latency and ensuring an optimal user experience.
