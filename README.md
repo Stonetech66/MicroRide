@@ -7,9 +7,9 @@ MicroRide is a scalable microservice application that showcases a robust impleme
 
 - **Asynchronous Communication:** The application leverages RabbitMQ, a robust message broker, to enable asynchronous communication between services.
   
-- **Efficient Data Storage:** MicroRide uses a combination of relational and NoSQL databases to suit different service requirements. PostgreSQL handles user-account-service,driver-service, payment-service,and ride-service, while MongoDB handles the tracking-service. Redis is utilized as a temporary data store to enhance response time and to improve overall user experience.
+- **Efficient Data Storage:** MicroRide uses a combination of relational and NoSQL databases to suit different service requirements. PostgreSQL handles user-account-service,driver-service, payment-service,and ride-service, while MongoDB handles the tracking-service. Redis is utilized as a temporary data store/cache to enhance response time and to improve overall user experience.
 
-- **Authentication and Authorization:** The user-account-service provides a secure and reliable authentication and authorization mechanism. By validating user credentials and storing them in Redis, the application optimizes subsequent requests, reducing latency and ensuring an optimal user experience.
+- **Authentication and Authorization:** The user-account-service provides a secure and reliable authentication and authorization mechanism. By validating user credentials and storing them in Redis, the application optimizes subsequent requests, reducing latency and ensuring an optimal user experience
 
 - **Driver Tracking and ETA Calculation:** The tracking-service includes features for finding the nearest available driver using MongoDB geospatial queries and calculating the estimated time of arrival (ETA) for drivers based on their recent location data and speed.
 
@@ -35,7 +35,7 @@ MicroRide is a scalable microservice application that showcases a robust impleme
 
 - **Backend:** The backend of all services is powered by FastAPI, a modern and high-performance web framework for building APIs with Python. FastAPI's asynchronous capabilities complement the microservices architecture, ensuring exceptional performance and scalability.
   
-- **Databases:** PostgreSQL is used for services handling structured data, while MongoDB is utilized for the tracking service's location data storage. Redis acts as a cache for temporary data storage, optimizing performance.
+- **Databases:** PostgreSQL is used for services handling structured data, while MongoDB is utilized for the tracking service's location data storage. Redis acts as a cache/temporary data storage, optimizing performance.
 
 - **Message Broker:** RabbitMQ enables efficient asynchronous communication between services, promoting scalability and flexibility.
 
