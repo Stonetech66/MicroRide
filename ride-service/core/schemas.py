@@ -1,17 +1,22 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Union
 from uuid import UUID
 from datetime import datetime
 from .models import Ride_Status
 
 
-class RideBase(BaseModel):
-    destination: str 
-    pickup_location: str 
+class Location(BaseModel):
+    lon: float = Field(le=180, ge=-180)
+    lat: float=Field(le=90, ge=-90)
 
-class BookRide(RideBase):
-    destination: str 
-    pickup_location: str 
+class RideBase(BaseModel):
+    destination: list
+    pickup_location: list
+
+class BookRide(BaseModel):
+    destination: Location
+    pickup_location: Location
+
     
 class RideDetails(RideBase):
     id: UUID

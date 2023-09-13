@@ -1,22 +1,29 @@
 from pydantic import BaseModel
 from typing import Union
 from uuid import UUID
-from datetime import date
+from datetime import date, datetime
 from .models import Ride_Status, Driver_Status
-from enum import Enum
+import enum 
 
 
 
-    
+class UpdateStatusEnum(str,enum.Enum):
+    available= 'available'
+    unavailable= 'unavailable'
+
+
+
+
+
 class RideDetails(BaseModel):
     id: UUID
-    destination: str 
-    pickup_location: str 
-    driver_id: Union[str, None]
+    destination: list
+    pickup_location: list
+    user_id: Union[str, None]
     status: Ride_Status
     fare: Union[float, None]
     paid: bool
-    date: date
+    date: datetime
 
     class Config:
         orm_mode=True
@@ -34,5 +41,5 @@ class DriverDetails(DriverCreate):
     status: Driver_Status
 
 
-class UpdateStatus(BaseModel):
-   status:Driver_Status
+class RideSchema(BaseModel):
+    ride_id:str

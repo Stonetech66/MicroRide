@@ -5,7 +5,7 @@ from .dependencies import get_current_websocket_user, get_current_websocket_driv
 
 app= FastAPI()
 from fastapi.middleware.cors import CORSMiddleware
-app=FastAPI(prefix='/v1', tags=["auth"])
+app=FastAPI(title='MicroRide notification-servicey')
 
 app.add_middleware(
     CORSMiddleware,
@@ -13,6 +13,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=['*']      
     )
+
 
 user_html = """
 <!DOCTYPE html>

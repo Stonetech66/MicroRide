@@ -1,6 +1,6 @@
 from passlib.context import CryptContext
 
-pwd_hash=CryptContext(schemes=['bcrypt'], deprecated='auto')
+
 class PasswordManager:
     pwd_hash=CryptContext(schemes=['bcrypt'], deprecated='auto')
 

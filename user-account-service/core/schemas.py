@@ -6,9 +6,7 @@ SECRET_KEY=os.getenv('SECRET_KEY', 'secret')
 
 class Settings(BaseModel):
     authjwt_secret_key: str = SECRET_KEY
-    authjwt_token_location:set ={'cookies','headers'}
-    authjwt_access_cookie_key:str='access_token'
-    authjwt_refresh_cookie_key:str='refresh_token'
+    authjwt_token_location:set ={'headers'}
     authjwt_cookie_csrf_protect: bool = True
     # authjwt_cookie_samesite:str ='lax'
 

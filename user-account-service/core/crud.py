@@ -3,11 +3,11 @@ from fastapi import HTTPException
 from sqlalchemy import select
 import uuid
 from .utils import password_manager
+from asyncpg.exceptions import UniqueViolationError
 
 
 class UserCrud:
 
-    
     @staticmethod
     async def get_user_by_id(database, id):
         query= select(User).where(User.c.id==id)
@@ -17,11 +17,12 @@ class UserCrud:
     @staticmethod
     async def create_user(database, schema):
         schema.password=password_manager.hash_password(schema.password)
-        query= User.insert().values(**schema.dict(), id=str(uuid.uuid4()))
+        uid=str(uuid.uuid4())
+        query= User.insert().values(**schema.dict(), id=uid)
         try:
             user= await database.execute(query)
-            return user
-        except:
+            return uid
+        except UniqueViolationError:
             raise HTTPException(detail='user with this email already exists', status_code=400)
 
     @staticmethod

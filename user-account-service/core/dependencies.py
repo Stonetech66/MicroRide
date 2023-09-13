@@ -4,11 +4,11 @@ from fastapi.security import HTTPBearer
 from .crud import UserCrud
 from .database import database
 
-async def get_current_user(Authorization=Depends(HTTPBearer()),Authorize:AuthJWT=Depends(),):
-    exception=HTTPException(status_code=401, detail='invalid access token or access token has expired', headers={'WWW-Authenticate': 'Bearer'})
+async def get_current_user(Authorization=Depends(HTTPBearer()),Jwt:AuthJWT=Depends(),):
+    exception=HTTPException(status_code=401, detail='invalid or expired access token', headers={'WWW-Authenticate': 'Bearer'})
     try:
-        Authorize.jwt_required()
-        user_id=Authorize.get_jwt_subject()
+        Jwt.jwt_required()
+        user_id=Jwt.get_jwt_subject()
         user= await UserCrud.get_user_by_id(database, user_id)
         return user
     except:

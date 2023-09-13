@@ -3,97 +3,107 @@ import aioredis
 import json
 from aio_pika import connect, ExchangeType
 from .database import database
-from .models import Ride, Ride_Status
-import websockets
-from datetime import datetime
 from functools import partial
+from . import callbacks
 import os
 
+# Define RabbitMQ connection details from environmental variables
 RABBITMQ_HOST= os.getenv('RABBITMQ_HOST')
 RABBITMQ_PORT= os.getenv('RABBITMQ_PORT')
 RABBITMQ_USER= os.getenv('RABBITMQ_DEFAULT_USER')
 RABBITMQ_PASSWORD= os.getenv('RABBITMQ_DEFAULT_PASS')
 
+# Construct RabbitMQ URL
 RABBITMQ_URL= f'amqp://{RABBITMQ_USER}:{RABBITMQ_PASSWORD}@{RABBITMQ_HOST}:{RABBITMQ_PORT}/'
 
-NOTIFICATION_SERVICE_HOST=os.getenv('NOTIFICATION_SERVICE_HOST')
-WEBSOCKET_SECRET_KEY=os.getenv('WEBSOCKET_SECRET_KEY')
+# Get Redis host
 REDIS_HOST= os.getenv('REDIS_HOST')
 
-async def send_websocket_data(user_id, data):
-        time=datetime.now()
-        async with websockets.connect(f'ws://{NOTIFICATION_SERVICE_HOST}/api/v1/ws/user/?type=server&token={WEBSOCKET_SECRET_KEY}') as websocket:
-            await websocket.send(json.dumps(data))
         
         
-
+# Callback for handling analysis-related messages
 async def analysis_consumer_callback(redis, message):
+    consumer_callback= callbacks.AnalysisConsumerCallback()
     async with message.process():
         data=json.loads(message.body)
-        user_id= str(data['user_id'])
-        saved_ride_data=await redis.hgetall('ride-'+user_id)
-        if saved_ride_data:
-            saved_ride_id=saved_ride_data['ride_id']
-            if  saved_ride_id == data['ride_id']: 
-                await send_websocket_data(user_id, data)
-                await redis.hset('ride-'+user_id, 'fare', data['fare'])
+        if message.routing_key == 'analysis.ride.fare':
+            await consumer_callback.analysis_ride_fare(redis, data)
 
-async def tracking_consumer_callback(redis, message):
+# Callback for handling tracking-related messages
+async def tracking_consumer_callback(channel, redis, message):
+    consumer_callback=callbacks.TrackingConsumerCallback()
     async with message.process():
         data= json.loads(message.body)
         if message.routing_key == 'tracking.ride.nearest_driver':
-            user_id=str(data['user_id'])
-            ride_id=await redis.hget('ride-'+user_id, 'ride_id')
-            if ride_id == data['ride_id']:
-                await redis.hset('ride-'+user_id, 'driver_id', data['driver_id'])
+            await consumer_callback.tracking_ride_nearest_driver(channel, redis, data)
         elif message.routing_key == 'tracking.ride.arrived':
-            ride_id= data['ride_id']
-            query= Ride.update().where(Ride.c.id==ride_id).values(status=Ride_Status.arrived)
-            ride= await database.execute(query)
+            await consumer_callback.tracking_ride_arrived(data)
         elif message.routing_key == 'tracking.ride.in_transit':
-            ride_id= data['ride_id']
-            query= Ride.update().where(Ride.c.id==ride_id).values(status=Ride_Status.in_transit)
-            ride= await database.execute(query)
+            await consumer_callback.tracking_ride_in_transit(data)
         elif message.routing_key == 'tracking.ride.completed':
-            ride_id= data['ride_id']
-            query= Ride.update().where(Ride.c.id==ride_id).values(status=Ride_Status.completed)
-            ride= await database.execute(query)
+            await consumer_callback.tracking_ride_completed(data)
+        elif message.routing_key=='tracking.ride.eta':
+            await consumer_callback.tracking_ride_eta_update(redis, data)
 
+# Callback for handling payment-related messages
 async def payment_consumer_callback(message):
+    consumer_callback=callbacks.PaymentConsumerCallback()
     async with message.process():
             data=json.loads(message.body)
-            ride_id= data['ride_id']
-            query= Ride.update().where(Ride.c.id==ride_id).values(paid=True)
-            await database.execute(query)
+            if message.routing_key=='payment.ride.success':
+                await consumer_callback.ride_payment_success(data)
+
+# Callback for handling driver-related messages
+async def driver_consumer_callback(redis,message):
+    consumer_callback=callbacks.DriverConsumerCallback()
+    async with message.process():
+            data=json.loads(message.body)
+            if message.routing_key == 'driver.ride.confirmed':
+                await consumer_callback.driver_ride_confirmed(redis, data)
 
 
-
+# Main consumer function
 async def consumer()-> None:
     connection= await connect(RABBITMQ_URL)
     try:
         async with connection:
             channel= await connection.channel()
+            # Connect to redis
             redis= await aioredis.from_url(f'redis://{REDIS_HOST}', decode_responses=True)
+            # Connect to database
             await database.connect()
 
-
+            # Declare exchanges and queues for different event types
             analysis_events= await channel.declare_exchange('analysis-events', ExchangeType.TOPIC,)
             analysis_queue= await channel.declare_queue('ride-service-queue-analysis',  durable=True)
             await analysis_queue.bind(analysis_events, routing_key='analysis.ride.fare.#')
             
             tracking_events= await channel.declare_exchange('tracking-events', ExchangeType.TOPIC,)
             tracking_queue= await channel.declare_queue('ride-service-queue-tracking',  durable=True)
-            await tracking_queue.bind(tracking_events, routing_key='tracking.ride.*')
+            await tracking_queue.bind(tracking_events, routing_key='tracking.ride.arrived.#')
+            await tracking_queue.bind(tracking_events, routing_key='tracking.ride.eta.#')
+            await tracking_queue.bind(tracking_events, routing_key='tracking.ride.in_transit.#')
+            await tracking_queue.bind(tracking_events, routing_key='tracking.ride.completed.#')
+            await tracking_queue.bind(tracking_events, routing_key='tracking.ride.nearest_driver.#')
 
             payment_events= await channel.declare_exchange('payment-events', ExchangeType.TOPIC,)
             payment_queue= await channel.declare_queue('ride-service-queue-payment',  durable=True)
             await payment_queue.bind(payment_events, routing_key='payment.ride.success.#')
 
+            driver_events= await channel.declare_exchange('driver-events', ExchangeType.TOPIC,)
+            driver_queue= await channel.declare_queue('ride-service-queue-driver',  durable=True)
+            await driver_queue.bind(driver_events, routing_key='driver.ride.confirmed.#')
+
+            # Consume messages with appropriate callbacks
             await analysis_queue.consume(partial(analysis_consumer_callback, redis))
-            await tracking_queue.consume(partial(tracking_consumer_callback, redis))
+            await tracking_queue.consume(partial(tracking_consumer_callback,channel, redis))
             await payment_queue.consume(payment_consumer_callback,)
+            await driver_queue.consume(partial(driver_consumer_callback, redis))
+
+            # Keep the consumer running
             while True:
                 await asyncio.sleep(1)
+
     finally:
         await channel.close()
         await connection.close()

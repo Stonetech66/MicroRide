@@ -1,6 +1,6 @@
 import databases
-import sqlalchemy
 import os 
+
 
 POSTGRES_PASSWORD= os.getenv('POSTGRES_PASSWORD')
 POSTGRES_USER= os.getenv('POSTGRES_USER')

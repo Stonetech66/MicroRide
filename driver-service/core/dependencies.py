@@ -14,24 +14,37 @@ AUTH_URL= os.getenv('VERIFY_TOKEN_URL')
 REDIS_HOST=os.getenv('REDIS_HOST')
 REDIS_URL= f'redis://{REDIS_HOST}'
 
-async def validate_token_in_redis(redis, token):
+# Function to validate token by checking if it`s stored in Redis
+async def validate_token_is_in_redis(redis, token):
     jwt=await redis.get(f'auth-{token}')
     if jwt:
         data=json.loads(jwt)
         return data['user_id']
     return None
     
-
-
+# Function to get the current user based on the Authorization token
 async def get_current_user(Authorization=Depends(HTTPBearer()), ):
-    exception=HTTPException(status_code=401, detail='invalid access token or access token has expired', headers={'WWW-Authenticate': 'Bearer'})
+    exception=HTTPException(
+        status_code=401, 
+        detail='invalid or expired access token', 
+        headers={'WWW-Authenticate': 'Bearer'}
+        )
+
+    # Connect to Redis
     redis= await  aioredis.from_url(REDIS_URL, decode_responses=True)
+
     try:
-        user_id=await validate_token_in_redis(redis, Authorization.credentials)
+        # Attempt to validate the token is stored in redis
+        user_id=await validate_token_is_in_redis(redis, Authorization.credentials)
         if user_id:
             return user_id
+        
+        # If not found in Redis, validate the token with the authentication service
         async with aiohttp.ClientSession() as session:
-            async with session.post(AUTH_URL, headers={'Authorization':f'{Authorization.scheme} {Authorization.credentials}'})as response:
+            async with session.post(
+                AUTH_URL, 
+                headers={'Authorization':f'{Authorization.scheme} {Authorization.credentials}'}
+                )as response:
                 status_code = response.status
                 if status_code == 200:
                     data= await response.json()
@@ -44,9 +57,12 @@ async def get_current_user(Authorization=Depends(HTTPBearer()), ):
     except asyncio.TimeoutError:
         raise HTTPException(status_code=500, detail='server error an error occured', headers={'WWW-Authenticate': 'Bearer'})
    
-
-async def get_user_is_driver(user_id=Depends(get_current_user), ):
+# Function to check if the user is a registered driver
+async def get_user_is_registered_driver(user_id=Depends(get_current_user), ):
+    # Define exception to handle unauthorized access
     exception=HTTPException(detail='user is not signed up as a driver', status_code=400)
+
+    # Check if the user is a registered driver in the database
     query= select(Driver).where(Driver.c.user_id==user_id)
     driver=await database.fetch_one(query)
     if not driver:

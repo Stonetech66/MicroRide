@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Float, Date, Integer, Boolean, Table, MetaData, Enum, func, TIMESTAMP, ForeignKey
+from sqlalchemy import Column, String, Float, Date, Integer, Boolean, Table, MetaData, Enum, func, TIMESTAMP, ForeignKey, ARRAY
 
 import enum
 metadata=MetaData()
@@ -7,7 +7,10 @@ metadata=MetaData()
 class Driver_Status(str,enum.Enum):
     available= 'available'
     unavailable= 'unavailable'
-    in_transit= 'in-transit'
+    in_transit= 'in_transit'
+    on_pickup='on_pickup'
+    matched='matched'
+    arrived= 'arrived'
 
 
 
@@ -28,7 +31,7 @@ Driver=Table(
 
 class Ride_Status(str, enum.Enum):
     completed= 'completed'
-    in_transit= 'in-transit'
+    in_transit= 'in_transit'
     canceled= 'canceled'
     confirmed= 'confirmed'
     arrived= 'arrived'
@@ -42,8 +45,8 @@ Ride=Table(
     Column('id', String(36), primary_key=True),
     Column('user_id',String(36)),
     Column('driver_id', String(36),ForeignKey('drivers.id'), nullable=True ),
-    Column('destination', String(200), nullable=False),
-    Column('pickup_location',String(200), nullable=False),
+    Column('destination', ARRAY(Float), nullable=False),
+    Column('pickup_location',ARRAY(Float), nullable=False),
     Column('fare',Float, nullable=True, server_default='0.0'),
     Column('status',Enum(Ride_Status), nullable=False),
     Column('paid',Boolean,server_default='false'),
