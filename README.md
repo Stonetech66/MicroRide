@@ -1,5 +1,5 @@
 <h1 align="center">MicroRide</h1>
-MicroRide is a scalable microservice application that showcases a robust implementation of distributed systems and the effective utilization of modern technologies in an event-driven architecture. Designed as a simplified ride application, MicroRide demonstrates key architectural patterns and seamless integration with various tools. Developed as a hands-on project to learn building microservice applications, MicroRide encompasses essential features while providing insights into future enhancements.
+MicroRide is a scalable microservice application that showcases a robust implementation of distributed systems and the effective utilization of modern technologies in an event-driven architecture. MicroRide demonstrates key architectural patterns and seamless integration with various tools. Developed as a hands-on project to learn about building microservice applications, MicroRide encompasses essential features while providing insights into future enhancements.
 
 ## 🚀 Key Features
 
@@ -11,7 +11,7 @@ MicroRide is a scalable microservice application that showcases a robust impleme
 
 - **Authentication and Authorization:** The user-account-service provides a secure and reliable authentication and authorization mechanism. By validating user credentials and storing them in Redis, the application optimizes subsequent requests, reducing latency and ensuring an optimal user experience.
 
-- **Driver Tracking and ETA Calculation:** The tracking-service includes features for finding the nearest available driver using MongoDB geospatial queries and calculating the estimated time of arrival (ETA) for drivers based on their recent location history.
+- **Driver Tracking and ETA Calculation:** The tracking-service includes features for finding the nearest available driver using MongoDB geospatial queries and calculating the estimated time of arrival (ETA) for drivers based on their recent location data and speed.
 
 - **Real-time Notifications**: The notification-service employs websockets to deliver real-time notifications to both drivers and users. Whether it's ride cancellations, ride confirmations, driver arrivals, or ride completions, MicroRide ensures timely updates and seamless user experience.
 
