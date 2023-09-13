@@ -11,23 +11,25 @@ MicroRide is a scalable microservice application that showcases a robust impleme
 
 - **Authentication and Authorization:** The user-account-service provides a secure and reliable authentication and authorization mechanism. By validating user credentials and storing them in Redis, the application optimizes subsequent requests, reducing latency and ensuring an optimal user experience.
 
+- **Driver Tracking and ETA Calculation:** The tracking-service includes features for finding the nearest available driver using MongoDB geospatial queries and calculating the estimated time of arrival (ETA) for drivers based on their recent location history.
+
 - **Real-time Notifications**: The notification-service employs websockets to deliver real-time notifications to both drivers and users. Whether it's ride cancellations, ride confirmations, driver arrivals, or ride completions, MicroRide ensures timely updates and seamless user experience.
 
 ## 📋 Services Overview
 
-1. **User Account Service:** Responsible for user registration, login, and authentication. It securely stores user credentials and provides a jwt-token-based authentication mechanism.
+1. **User Account Service:** Handles user registration, login, and robust authentication. It serves as the authentication service for other microservices, validating JWT tokens and providing a secure token-based authentication mechanism.
 
-2. **Driver Service:** Manages driver-related functionalities, such as driver registration and driver information retrieval.
+2. **Driver Service:** Responsible for various driver-related tasks, including driver registration, handling driver responses to ride requests (acceptance and rejection), and retrieving driver information.
 
-3. **Ride Service:** Handles ride-related operations, including ride requests, ride confirmations, and ride cancellations. It utilizes RabbitMQ for asynchronous communication with other services.
+3. **Ride Service:** Responsible for managing all aspects of ride-related operations, including ride requests, ride confirmations, ride cancellations, and retrieval of past ride history.
 
 4. **Payment Service:** The payment service provides endpoints to simulate payment successes and failures. While it doesn't integrate with an actual payment gateway, it enables testing and validation of payment-related functionalities.
    
-6. **Tracking Service:** While actual driver tracking is not fully implemented, the tracking service offers essential endpoints to simulate ride progress, such as marking a ride as completed, in-transit, or the driver's arrival. This paves the way for future enhancements in real-time tracking.
+5. **Tracking Service:** The tracking service is pivotal for efficient rider-driver matching. It employs MongoDB geospatial queries to locate the nearest available driver, optimizing response time. Additionally, the service calculates driver estimated time of arrival (ETA) using a custom algorithm, factoring in recent location history, distance and the driver average speed. To maintain accuracy, MicroRide provides the client application an endpoint for frequent driver location updates, typically every 30 seconds(configurable), ensuring real-time positioning and enhancing the rider's experience.
 
-7. **Analysis Service:** The analysis service, while not fully functional in its current state, is designed to process and provide valuable data insights. Presently, it fetches random prices and estimated time of arrivals (ETA) from static data, creating a foundation for future advanced analytics.
+6. **Analysis Service:** The analysis service, While not fully functional, its primary function is to gather ride fare price data. This serves as the foundation for future enhancements in data analytics, enabling the service to provide valuable insights into ride fare prices, including trends, patterns, and more accurate pricing information.
 
-8. **Notification Service:** Facilitates real-time notifications to users and drivers about various ride events, improving overall user experience and engagement.
+7. **Notification Service:** Facilitates real-time notifications to users and drivers about various ride events, improving overall user experience and engagement.
 
 ## ⚒️ Technology Stack
 
