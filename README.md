@@ -11,7 +11,7 @@ MicroRide is a scalable microservice application that showcases a robust impleme
 
 - **Authentication and Authorization:** The user-account-service provides a secure and reliable authentication and authorization mechanism. By validating user credentials and storing them in Redis, the application optimizes subsequent requests, reducing latency and ensuring an optimal user experience
 
-- **Driver Tracking and ETA Calculation:** The tracking-service incorporates MongoDB geospatial indexes for pinpointing the nearest available drivers and employs a custom algorithm to calculate drivers' estimated time of arrival (ETA) based on their recent location data and speed, ensuring accurate and timely ride experiences.
+- **Driver Tracking and ETA Calculation:** The tracking-service incorporates MongoDB geospatial indexes for locating the nearest available driver and employs a custom algorithm to calculate drivers' estimated time of arrival (ETA) based on their recent location data and speed, ensuring accurate and timely ride experiences.
 
 - **Real-time Notifications**: Through the notification-service, MicroRide utilizes WebSockets to provide instantaneous updates to both drivers and users. Whether conveying ride cancellations, ride request, notifying of driver arrivals, or marking ride completions, the system ensures prompt notifications for a seamless user experience.
   
