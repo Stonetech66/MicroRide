@@ -11,10 +11,10 @@ MicroRide is a scalable microservice application that showcases a robust impleme
 
 - **Authentication and Authorization:** The user-account-service provides a secure and reliable authentication and authorization mechanism. By validating user credentials and storing them in Redis, the application optimizes subsequent requests, reducing latency and ensuring an optimal user experience
 
-- **Driver Tracking and ETA Calculation:** The tracking-service includes features for finding the nearest available driver using MongoDB geospatial queries and calculating the estimated time of arrival (ETA) for drivers based on their recent location data and speed.
+- **Driver Tracking and ETA Calculation:** The tracking-service incorporates MongoDB geospatial indexes for pinpointing the nearest available drivers and employs a custom algorithm to calculate drivers' estimated time of arrival (ETA) based on their recent location data and speed, ensuring accurate and timely ride experiences.
 
-- **Real-time Notifications**: The notification-service employs websockets to deliver real-time notifications to both drivers and users. Whether it's ride cancellations, ride confirmations, driver arrivals, or ride completions, MicroRide ensures timely updates and seamless user experience.
-
+- **Real-time Notifications**: Through the notification-service, MicroRide utilizes WebSockets to provide instantaneous updates to both drivers and users. Whether conveying ride cancellations, ride request, notifying of driver arrivals, or marking ride completions, the system ensures prompt notifications for a seamless user experience.
+  
 ## 📋 Services Overview
 
 1. **User Account Service:** Handles user registration, login, and robust authentication. It serves as the authentication service for other microservices, validating JWT tokens and providing a secure token-based authentication mechanism.
@@ -25,11 +25,11 @@ MicroRide is a scalable microservice application that showcases a robust impleme
 
 4. **Payment Service:** The payment service provides endpoints to simulate payment successes and failures. While it doesn't integrate with an actual payment gateway, it enables testing and validation of payment-related functionalities.
    
-5. **Tracking Service:** The tracking service is pivotal for efficient rider-driver matching. It employs MongoDB geospatial queries to locate the nearest available driver, optimizing response time. Additionally, the service calculates driver estimated time of arrival (ETA) using a custom algorithm, factoring in recent location history, distance and the driver average speed. To maintain accuracy, MicroRide provides the client application an endpoint for frequent driver location updates, typically every 30 seconds(configurable), ensuring real-time positioning and enhancing the rider's experience.
+5. **Tracking Service:** The tracking service is pivotal for efficient rider-driver matching. It employs MongoDB geospatial indexing to locate the nearest available driver, optimizing response time. Additionally, the service calculates driver estimated time of arrival (ETA) using a custom algorithm, factoring in recent location history, distance and the driver average speed. To maintain accuracy, MicroRide provides the client application an endpoint for frequent driver location updates, typically every 30 seconds(configurable), ensuring real-time positioning and enhancing the rider's experience.
 
 6. **Analysis Service:** The analysis service, While not fully functional, its primary function is to gather ride fare price data. This serves as the foundation for future enhancements in data analytics, enabling the service to provide valuable insights into ride fare prices, including trends, patterns, and more accurate pricing information.
 
-7. **Notification Service:** Facilitates real-time notifications to users and drivers about various ride events, improving overall user experience and engagement.
+7. **Notification Service:** Enhances the overall user experience and engagement by delivering real-time notifications to users and drivers for various events, including ride updates, payment status, and more.
 
 ## ⚒️ Technology Stack
 
