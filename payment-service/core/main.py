@@ -9,21 +9,26 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app= FastAPI(title='MicroRide payment-service')
 
+# Add CORS middleware to allow cross-origin requests
 app.add_middleware(
     CORSMiddleware,
     allow_origins=['*'],
     allow_credentials=True,
     allow_methods=['*']      
     )
+
+# Defines functions for application to run before startup
 @app.on_event('startup')
 async def startup():
+    # Connect to database
     await database.connect()
-
-
+# Defines functions for application to run before shutdown
 @app.on_event('shutdown')
 async def shutdown():
+    # Disconnect to database
     await database.disconnect()
 
+# Root route for probing the application during startup
 @app.get('/')
 async def app_probe():
     return {'message':'success'}

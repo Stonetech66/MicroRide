@@ -9,6 +9,7 @@ from fastapi.security import HTTPBearer
 from fastapi.middleware.cors import CORSMiddleware
 app=FastAPI(title='MicroRide user-acccount-service')
 
+# Add CORS middleware to allow cross-origin requests
 app.add_middleware(
     CORSMiddleware,
     allow_origins=['*'],
@@ -16,22 +17,29 @@ app.add_middleware(
     allow_methods=['*']      
     )
 
+# Defines functions for application to run before startup
 @app.on_event('startup')
 async def startup():
+    # Connect to database
     await database.connect()
 
+# Defines functions for application to run before shutdown
 @app.on_event('shutdown')
 async def shutdown():
+    # Disconnect to database
     await database.disconnect()
 
+# Root route for probing the application during startup
 @app.get('/')
 async def app_probe():
     return {'message':'success'}
 
+# Endpoint to get details of a user
 @app.get("/api/v1/user", response_model=schemas.UserDetails)
 async def user_details(user:dict=Depends(get_current_user)):
     return user
 
+# Endpoint to login
 @app.post('/api/v1/login', response_model=schemas.LoginDetails)
 async def login(login:schemas.Login,Jwt:AuthJWT=Depends()):
 
@@ -41,7 +49,7 @@ async def login(login:schemas.Login,Jwt:AuthJWT=Depends()):
     refresh_token=Jwt.create_refresh_token(subject=user.id)
     return {'access_token':access_token, 'refresh_token':refresh_token, 'user':user}
 
-
+# Endpoint to signup
 @app.post('/api/v1/signup', summary='endpoint for users to signup', status_code=201)
 async def signup(user:schemas.Signup, Jwt:AuthJWT=Depends()):
 
@@ -53,8 +61,7 @@ async def signup(user:schemas.Signup, Jwt:AuthJWT=Depends()):
     return {'access_token':access_token, 'refresh_token':refresh_token}
 
 
-
-
+# Endpoint to refresh access token
 @app.post('/api/v1/refresh-token',)
 def refresh_token(Jwt:AuthJWT=Depends(),  Authorization=Depends(HTTPBearer()),):
     exception=HTTPException(status_code=401, detail='invalid or expired refresh token')
@@ -66,10 +73,12 @@ def refresh_token(Jwt:AuthJWT=Depends(),  Authorization=Depends(HTTPBearer()),):
     except:
         raise exception
     
+# Endpoint to logout
 @app.post('/api/v1/logout')
 def logout(Jwt:AuthJWT=Depends()):
     return {'message':'delete stored tokens from local storage'}
 
+# Endpoint to verify access token
 @app.post('/api/v1/verify-token')
 def verify_token(Jwt:AuthJWT=Depends(), Authorization=Depends(HTTPBearer())):
     exception=HTTPException(status_code=401, detail='invalid or expired refresh token')

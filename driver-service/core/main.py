@@ -22,9 +22,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=['*']      
     )
-from  dotenv import load_dotenv
 
-load_dotenv()
 # Construct Redis URL from enviromental variable
 REDIS_HOST= os.getenv('REDIS_HOST')
 REDIS_URL= f'redis://{REDIS_HOST}'
@@ -44,8 +42,8 @@ async def startup():
 @app.on_event('shutdown')
 async def shutdown():
     global redis
-
-    # Connect to database
+    
+    # Disconnect to database
     await database.disconnect()
     # Disconnect to redis
     await redis.close()
