@@ -81,7 +81,7 @@ In the project directory, run the start script to deploy all services:
 If you are running MicroRide locally, you need to port forward to the Ingress Controller to access the services. Execute the following command:
 
 ```
-kubectl port-forward svc/nginx-ingress-controller 8080:80
+kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller 8080:80
 ```
 
 ### Step 3: Get External IP(Online Setup Only)
