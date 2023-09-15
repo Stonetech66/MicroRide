@@ -92,7 +92,7 @@ async def get_driver_past_rides( user_id=Depends(get_current_user), driver=Depen
 @app.put('/api/v1/status', summary='Endpoint to update driver`s availability status')
 async def update_driver_status(driver_status:UpdateStatusEnum,task:BackgroundTasks, driver=Depends(get_user_is_registered_driver)):
     if driver.status not in ('available', 'unavailable'):
-        raise HTTPException(detail='can`t update status currently have an active ride or ride request')
+        raise HTTPException(detail='can`t update status currently have an active ride or ride request', status_code=400)
     query= Driver.update().where(Driver.c.id==driver.id).values(status=driver_status)
     await database.execute(query)
     task.add_task(bg_tasks.background_task_driver_status_updated, driver.id, driver_status)
