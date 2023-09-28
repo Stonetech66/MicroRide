@@ -119,3 +119,7 @@ To stop all services and clean up the deployment, run the end script:
 ```
 ./end.sh
 ```
+
+## Future Ehancements
+
+**Implement Saga Pattern for Distributed Transactions**: As part of upcoming ehancments MicroRide will undergo enhancements to its microservice architecture by implementing the Saga pattern(choreography). This will help in improving fault tolerance and maintain data consistency across the microservices.

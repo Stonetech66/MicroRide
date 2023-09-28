@@ -109,10 +109,14 @@ async def accept_ride(ride_id:RideSchema, task:BackgroundTasks, driver=Depends(g
         raise HTTPException(detail='ride not found', status_code=404)
     ride_request['id']=ride_request['ride_id']
     ride_request.pop('ride_id')
-    ride_query= Ride.insert().values(**ride_request)
-    await database.execute(ride_query)
-    driver_query= Driver.update().where(Driver.c.id==ride_request['driver_id']).values(status=Driver_Status.on_pickup)
-    await database.execute(driver_query)
+    try:
+        async with database.transaction():
+            ride_query= Ride.insert().values(**ride_request)
+            await database.execute(ride_query)
+            driver_query= Driver.update().where(Driver.c.id==ride_request['driver_id']).values(status=Driver_Status.on_pickup)
+            await database.execute(driver_query)
+    except:
+        raise HTTPException(detail='error occured try again', status_code=500)
     task.add_task(bg_tasks.background_task_accept_ride, ride_request, driver.id, redis)
     return {'message':'ride request confirmed'}
 
