@@ -15,16 +15,26 @@ MicroRide is a scalable microservice application that showcases a robust impleme
   
 ## 📋 Services Overview
 
-1. **👤 User Account Service:** Manages user registration, login, and ensures strong authentication. It functions as the authentication service, validating user credentials, issuing JWT tokens, and maintaining a secure authentication process.
+1. **👤 User Account Service:** Manages user registration, login, and ensures secure authentication. It functions as the authentication service, validating user credentials, issuing JWT tokens, and maintaining a secure authentication process.
+
+    ![User account service](./images/user-account-service-swagger-doc.png)
 
 2. **🚗 Driver Service:** Responsible for various driver-related tasks, including driver registration, handling driver responses to ride requests (acceptance and rejection), and retrieving driver information.
 
+      ![Driver service swagger doc](./images/driver-service-swagger-doc.png)
+
 3. **🚕 Ride Service:** Responsible for managing all aspects of ride-related operations, including ride requests, ride confirmations, ride cancellations, and retrieval of past ride history.
+
+     ![Ride service swagger doc](./images/ride-service-swagger-doc.png)
    
 4. **📍 Tracking Service:** The tracking service is essential for efficient rider-driver matching. It employs [MongoDB geospatial indexing](https://github.com/Stonetech66/MicroRide/blob/main/tracking-service/core/utils.py) to locate the nearest available driver. Additionally, the service calculates the driver's estimated time of arrival (ETA) using a [custom algorithm](https://github.com/Stonetech66/MicroRide/blob/main/tracking-service/core/utils.py), factoring in the driver's recent location history, distance to the pickup location or rider's destinaion, and the driver average speed. To ensure precision, MicroRide provides the client application an endpoint for frequent driver location updates, typically every 30 seconds(configurable), ensuring real-time positioning and enhancing the rider's experience.
 
+     ![Tracking service swagger doc](./images/tracking-service-swagger-doc.png)
+   
 5. **💳 Payment Service:** The payment service provides endpoints to simulate payment successes and failures. While it doesn't integrate with an actual payment gateway, it enables testing and validation of payment-related functionalities.
-  
+   
+     ![Payment service swagger doc](./images/payment-service-swagger-doc.png)
+   
 6. **📊 Analysis Service:** The analysis service, While not fully functional, its primary function is to gather ride fare price data. This serves as the foundation for future enhancements in data analytics, enabling the service to provide valuable insights into ride fare prices, including trends, patterns, and more accurate pricing information.
 
 7. **🔔 Notification Service:** Enhances the overall user experience and engagement by delivering real-time notifications to users and drivers for various events, including ride updates, payment status, and more.
