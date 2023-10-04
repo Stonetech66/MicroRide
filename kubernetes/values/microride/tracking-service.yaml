@@ -31,3 +31,6 @@ otherSecrets:
 - name: MONGO_ROOT_PASSWORD
   secretName: mongo-tracking-service-mongodb
   secretKey: mongodb-root-password
+appSecret:
+- key: SECRET_KEY
+  value: IHN0b25l

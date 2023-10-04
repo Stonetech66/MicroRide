@@ -82,7 +82,7 @@ async def find_ride(schema:BookRide,task:BackgroundTasks,  user_id=Depends(get_c
     task.add_task(bg_tasks.background_task_find_ride, redis, ride_data, user_id)
     return {
         'message':'connect to the websocket url to listen for ride events ride events',
-        'websocket_url':'/notification/user?token=jwt-credential',
+        'websocket_url':'/notification-service/user?token=jwt-credential',
         }
 
 # Endpoint to confirm a ride request

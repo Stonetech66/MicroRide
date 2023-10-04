@@ -4,7 +4,7 @@ from sqlalchemy import select, join, or_
 import uuid
 from .database import database
 from .models import Driver, Ride, Ride_Status, Driver_Status
-from .schemas import DriverCreate, DriverDetails, RideDetails, UpdateStatusEnum, RideSchema
+from .schemas import DriverCreate, DriverDetails, RideDetails, UpdateStatusEnum
 from asyncpg.exceptions import UniqueViolationError
 import json
 import os
@@ -99,13 +99,13 @@ async def update_driver_status(driver_status:UpdateStatusEnum,task:BackgroundTas
     return {'message':'status updated successfully'}
 
 # Endpoint to accept ride request
-@app.post('/api/v1/rides/accept', summary='Endpoint to accept ride request')
-async def accept_ride(ride_id:RideSchema, task:BackgroundTasks, driver=Depends(get_user_is_registered_driver)):
+@app.post('/api/v1/rides/{ride_id}/accept', summary='Endpoint to accept ride request')
+async def accept_ride(ride_id:str, task:BackgroundTasks, driver=Depends(get_user_is_registered_driver)):
     try:
         ride_request=json.loads(await redis.get('ride-request-'+driver.id,))  
     except TypeError: # if the ride_request is None
         raise HTTPException(detail='ride not found', status_code=404)
-    if not ride_request.get('ride_id')==ride_id.ride_id:
+    if not ride_request.get('ride_id')==ride_id:
         raise HTTPException(detail='ride not found', status_code=404)
     ride_request['id']=ride_request['ride_id']
     ride_request.pop('ride_id')
@@ -121,13 +121,13 @@ async def accept_ride(ride_id:RideSchema, task:BackgroundTasks, driver=Depends(g
     return {'message':'ride request confirmed'}
 
 # Endpoint to reject ride request
-@app.post('/api/v1/rides/reject',summary='Endpoint to reject ride request' )
-async def reject_ride(ride_id:RideSchema, task:BackgroundTasks,  driver=Depends(get_user_is_registered_driver)):
+@app.post('/api/v1/rides/{ride_id}/reject',summary='Endpoint to reject ride request' )
+async def reject_ride(ride_id:str, task:BackgroundTasks,  driver=Depends(get_user_is_registered_driver)):
     try:
         ride_request=json.loads(await redis.get('ride-request-'+driver.id,))  
     except TypeError: # if the ride_request is None
         raise HTTPException(detail='ride not found', status_code=404)
-    if not ride_request.get('ride_id')==ride_id.ride_id:
+    if not ride_request.get('ride_id')==ride_id:
         raise HTTPException(detail='ride not found', status_code=404)
     driver_query= Driver.update().where(Driver.c.id==ride_request['driver_id']).values(status=Driver_Status.available)
     await database.execute(driver_query)

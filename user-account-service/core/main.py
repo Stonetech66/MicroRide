@@ -50,7 +50,7 @@ async def login(login:schemas.Login,Jwt:AuthJWT=Depends()):
     return {'access_token':access_token, 'refresh_token':refresh_token, 'user':user}
 
 # Endpoint to signup
-@app.post('/api/v1/signup', summary='endpoint for users to signup', status_code=201)
+@app.post('/api/v1/signup', status_code=201)
 async def signup(user:schemas.Signup, Jwt:AuthJWT=Depends()):
 
     if  await UserCrud.get_user_by_email(database, user.email):
@@ -78,13 +78,3 @@ def refresh_token(Jwt:AuthJWT=Depends(),  Authorization=Depends(HTTPBearer()),):
 def logout(Jwt:AuthJWT=Depends()):
     return {'message':'delete stored tokens from local storage'}
 
-# Endpoint to verify access token
-@app.post('/api/v1/verify-token')
-def verify_token(Jwt:AuthJWT=Depends(), Authorization=Depends(HTTPBearer())):
-    exception=HTTPException(status_code=401, detail='invalid or expired refresh token')
-    try:
-        current_user=Jwt.get_jwt_subject()
-        exp=Jwt.get_raw_jwt()['exp']
-        return {'user_id':current_user, 'exp':exp}
-    except:
-        raise exception

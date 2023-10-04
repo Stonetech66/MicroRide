@@ -36,3 +36,6 @@ otherSecrets:
 - name: WEBSOCKET_SECRET_KEY
   secretName: notification-service
   secretKey: WEBSOCKET_SECRET_KEY
+- name: SECRET_KEY
+  secretName: notification-service
+  secretKey: SECRET_KEY

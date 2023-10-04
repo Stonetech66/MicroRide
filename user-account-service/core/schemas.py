@@ -40,6 +40,3 @@ class LoginDetails(BaseModel):
         orm_mode=True
 
 
-class ValidateAccessToken(BaseModel):
-    token: str 
-

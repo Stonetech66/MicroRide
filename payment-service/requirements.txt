@@ -9,3 +9,4 @@ aiohttp==3.8.4
 uvicorn==0.22.0
 asyncpg==0.28.0
 pytz==2022.1
+fastapi-jwt-auth==0.5.0

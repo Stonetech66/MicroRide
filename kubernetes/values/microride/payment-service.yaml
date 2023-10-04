@@ -33,4 +33,6 @@ otherSecrets:
 - name: POSTGRES_PASSWORD
   secretName: postgres-payment-service-postgresql
   secretKey: postgres-password
-
+appSecret:
+- key: SECRET_KEY
+  value: IHN0b25l

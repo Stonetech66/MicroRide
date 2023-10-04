@@ -92,7 +92,7 @@ class WebsocketManager :
         #  Delete driver`s stored cached data in Redis
         await redis.delete(f'driver-current-websocket-data-{driver_id}')
 
-    async def send_user_websocket_data(self,user_id, event, data, redis, update_cache_data=False, clear_cache_data=False):
+    async def send_user_websocket_data(self,user_id, event, data, redis=None, update_cache_data=False, clear_cache_data=False):
             # Send data to a user`s websocket connnection and optionally update or clear cache data
             data.update({'event':event})
             data= json.dumps(data)
@@ -114,3 +114,6 @@ class WebsocketManager :
                 await  self.update_driver_websocket_event(redis, data, driver_id)
             elif clear_cache_data:
                await self.delete_driver_websocket_event(redis, driver_id)
+
+
+websocket_manager=WebsocketManager()

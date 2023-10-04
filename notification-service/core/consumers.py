@@ -4,7 +4,7 @@ import json
 from aio_pika import connect, ExchangeType
 import os
 from functools import partial
-from .callbacks import RideConsumerCallback, TrackingConsumerCallback, DriverConsumerCallback, PaymentConsumerCallback
+from . import callbacks
 
 
 # Define RabbitMQ connection details from environmental variables
@@ -21,7 +21,7 @@ REDIS_HOST=os.getenv('REDIS_HOST')
 
 # Callback for handling tracking-related messages
 async def tracking_consumer_callback(redis, message):
-    consumer_callback=TrackingConsumerCallback()
+    consumer_callback=callbacks.TrackingConsumerCallback()
     async with message.process():
         data= json.loads(message.body)
         user_id=data['user_id']
@@ -38,7 +38,7 @@ async def tracking_consumer_callback(redis, message):
 
 # Callback for handling ride-related messages
 async def ride_consumer_callback( redis, message):
-    consumer_callback=RideConsumerCallback()
+    consumer_callback=callbacks.RideConsumerCallback()
     async with message.process():
         data=json.loads(message.body)
         if message.routing_key == 'ride.find.driver':
@@ -49,7 +49,7 @@ async def ride_consumer_callback( redis, message):
 
 # Callback for handling payment-related messages
 async def payment_consumer_callback( redis, message):
-    consumer_callback=PaymentConsumerCallback()
+    consumer_callback=callbacks.PaymentConsumerCallback()
     async with message.process():
         data=json.loads(message.body)
         user_id=data['user_id']
@@ -61,7 +61,7 @@ async def payment_consumer_callback( redis, message):
 
 # Callback for handling driver-related messages
 async def driver_consumer_callback(redis, message):
-    consumer_callback=DriverConsumerCallback()
+    consumer_callback=callbacks.DriverConsumerCallback()
     async with message.process():
         data=json.loads(message.body)
         if message.routing_key == 'driver.created':
@@ -72,6 +72,14 @@ async def driver_consumer_callback(redis, message):
             await consumer_callback.driver_confirmed_ride(redis, data)
         elif message.routing_key == 'driver.ride.rejected':
             await consumer_callback.driver_rejected_ride(redis, data)
+
+# Callback for handling analysis-related messages
+async def analysis_consumer_callback(redis, message):
+    consumer_callback= callbacks.AnalysisConsumerCallback()
+    async with message.process():
+        data=json.loads(message.body)
+        if message.routing_key == 'analysis.ride.fare':
+            await consumer_callback.analysis_ride_fare(redis, data)
 
 
 # Main consumer function
@@ -108,11 +116,16 @@ async def consumer()-> None:
             await driver_queue.bind(driver_events, routing_key='driver.ride.rejected.#')
             await driver_queue.bind(driver_events, routing_key='driver.ride.confirmed.#')
 
+            analysis_events= await channel.declare_exchange('analysis-events', ExchangeType.TOPIC,)
+            analysis_queue= await channel.declare_queue('notification-service-queue-analysis',  durable=True)
+            await analysis_queue.bind(analysis_events, routing_key='analysis.ride.fare.#')
+           
             # Consume messages with appropriate callbacks
             await tracking_queue.consume(partial(tracking_consumer_callback, redis))
             await ride_queue.consume(partial(ride_consumer_callback, redis))
             await payment_queue.consume(partial(payment_consumer_callback, redis))
             await driver_queue.consume(partial(driver_consumer_callback, redis))
+            await analysis_queue.consume(partial(analysis_consumer_callback, redis))
 
             while True:
                 await asyncio.sleep(1)

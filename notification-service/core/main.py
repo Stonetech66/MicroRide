@@ -1,11 +1,11 @@
 from fastapi import FastAPI, Depends, WebSocketDisconnect
 from fastapi.responses import HTMLResponse
 from .dependencies import get_current_websocket_user, get_current_websocket_driver
-
+from . import schemas
 
 app= FastAPI()
 from fastapi.middleware.cors import CORSMiddleware
-app=FastAPI(title='MicroRide notification-servicey')
+app=FastAPI(title='MicroRide notification-service')
 
 app.add_middleware(
     CORSMiddleware,

@@ -9,7 +9,7 @@ MicroRide is a scalable microservice application that showcases a robust impleme
   
 - **Efficient Data Storage:** MicroRide uses a combination of relational and NoSQL databases to suit different service requirements. PostgreSQL handles user-account-service,driver-service, payment-service,and ride-service, while MongoDB handles the tracking-service. Redis is utilized as a temporary data store/cache to enhance response time and to improve overall user experience.
 
-- **Authentication and Authorization:** The user-account-service provides a secure and reliable authentication and authorization mechanism. By validating user credentials and storing them in Redis, the application optimizes subsequent requests, reducing latency and ensuring an optimal user experience
+- **Authentication and Authorization:** The user-account-service provides a secure and reliable authentication and authorization mechanism. 
 
 - **Driver Tracking and ETA Calculation:** The tracking-service incorporates MongoDB geospatial indexes for locating the nearest available driver and employs a custom algorithm to calculate drivers' estimated time of arrival (ETA) based on their recent location data and speed, ensuring accurate and timely ride experiences.
 
@@ -17,7 +17,7 @@ MicroRide is a scalable microservice application that showcases a robust impleme
   
 ## 📋 Services Overview
 
-1. **👤 User Account Service:** Handles user registration, login, and robust authentication. It serves as the authentication service for other microservices, validating JWT tokens and providing a secure authentication mechanism.
+1. **👤 User Account Service:** Handles user registration, login, and robust authentication. It serves as the authentication service validating JWT tokens and providing a secure authentication mechanism.
 
 2. **🚗 Driver Service:** Responsible for various driver-related tasks, including driver registration, handling driver responses to ride requests (acceptance and rejection), and retrieving driver information.
 

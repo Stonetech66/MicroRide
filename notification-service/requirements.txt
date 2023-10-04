@@ -7,3 +7,4 @@ aioredis==2.0.1
 websockets==11.0.3
 motor==3.1.2
 pytz==2022.1
+fastapi-jwt-auth==0.5.0

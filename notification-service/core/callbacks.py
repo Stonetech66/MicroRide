@@ -36,9 +36,13 @@ class TrackingConsumerCallback:
         await websocket_manager.send_driver_websocket_data(str(data['driver_id']), event, data, redis, clear_cache_data=True)
 
     async def tracking_nearest_driver(self, redis, user_id, data):
-        # Handle tracking nearest driver update
-        if not data.get('driver_id'):
-            await websocket_manager.delete_user_websocket_event(redis, user_id)
+        # Handle tracking no nearest driver update
+        if not data.get('driver'):
+            event='no driver available around you'
+            await websocket_manager.send_user_websocket_data(user_id, event, data,redis, clear_cache_data=True)
+
+
+                
 
 
 
@@ -57,6 +61,7 @@ class DriverConsumerCallback:
         data['event']=event
         data['ride_id']=data['id']
         data.pop('id')
+        await websocket_manager.send_user_websocket_data(data['user_id'], event, data, redis, update_cache_data=True)
         await websocket_manager.update_driver_websocket_event(redis, json.dumps(data), str(data['driver_id']),)        
 
     async def driver_rejected_ride(self,redis, data): 
@@ -69,6 +74,14 @@ class DriverConsumerCallback:
         event='new-ride-request'
         await websocket_manager.send_driver_websocket_data(str(data['driver_id']), event, data, redis, update_cache_data=True)
         
+# Class for handling analysis related events
+class AnalysisConsumerCallback:
+
+    # Handle analysis ride fare event
+    async def analysis_ride_fare(self, redis ,data):
+        user_id= str(data['user_id'])
+        event='ride-fare'
+        await websocket_manager.send_user_websocket_data(user_id, event, data)
 
 
 

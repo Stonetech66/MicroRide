@@ -18,7 +18,7 @@ class AnalysisConsumerCallback:
         if  saved_ride_id == data['ride_id']: 
             saved_ride_data['fare']=data['fare']
             await redis.set('ride-'+user_id, json.dumps(saved_ride_data))
-            await send_websocket_data(user_id, saved_ride_data)
+            
 
 
 # Class for handling tracking related events
@@ -37,9 +37,8 @@ class TrackingConsumerCallback:
                 await publish_ride_confirmed_user(channel, {**ride_data})
                 await redis.set('ride-'+str(user_id), json.dumps(ride_data))
             else:
-                data={'event':'no drivers available around you', 'user_id':user_id}
                 await redis.delete('ride-'+str(user_id))
-                await send_websocket_data(user_id, data)
+
 
     # Handle ride in transit
     async def tracking_ride_in_transit(self,data):
@@ -88,17 +87,8 @@ class DriverConsumerCallback:
         user_id= data['user_id']
         query= Ride.insert().values(**data)
         await database.execute(query)
-        ride_data= json.loads(await redis.get('ride-'+user_id))
 
-        '''consider scenario where ETA hasn`t arrived in the redis database. But the driver`s location will be updated every approx. 30 seconds so the eta should be fixed after say approx. 30 seconds '''
-        
-        #start= datetime.now()
-        # while ride_data.get('eta')==None and datetime.now()-start<timedelta(seconds=20):
-        #     asyncio.sleep(10)
-        #     ride_data= json.loads(await redis.get('ride-'+user_id))
-        # if ride_data.get('eta') == None:
-        #     ride_data.update({'eta':'error'})
         await redis.delete('ride-'+user_id)
-        await send_websocket_data(user_id, ride_data)
+
 
 

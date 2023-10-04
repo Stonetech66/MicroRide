@@ -29,6 +29,8 @@ containerEnvVars:
 appSecret:
 - key: WEBSOCKET_SECRET_KEY
   value: websocketsecret
+- key: SECRET_KEY
+  value: IHN0b25l
 otherSecrets:
 - name: MONGO_ROOT_PASSWORD
   secretName: mongo-notification-service-mongodb
