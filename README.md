@@ -7,17 +7,15 @@ MicroRide is a scalable microservice application that showcases a robust impleme
 
 - **Asynchronous Communication:** The application leverages RabbitMQ, a robust message broker, to enable asynchronous communication between services.
   
-- **Efficient Data Storage:** MicroRide uses a combination of relational and NoSQL databases to suit different service requirements. PostgreSQL handles user-account-service,driver-service, payment-service,and ride-service, while MongoDB handles the tracking-service. Redis is utilized as a temporary data store/cache to enhance response time and to improve overall user experience.
+- **Efficient Data Storage:** MicroRide uses a combination of relational and NoSQL databases to suit different service requirements. PostgreSQL handles user-account-service,driver-service, payment-service,and ride-service, while MongoDB handles the tracking-service. Redis is utilized as a temporary data store/cache enhancing response times and improving overall user experience.
 
-- **Authentication and Authorization:** The user-account-service provides a secure and reliable authentication and authorization mechanism. 
-
-- **Driver Tracking and ETA Calculation:** The tracking-service incorporates MongoDB geospatial indexes for locating the nearest available driver and employs a custom algorithm to calculate drivers' estimated time of arrival (ETA) based on their recent location data and speed, ensuring accurate and timely ride experiences.
+- **Driver Tracking and ETA Calculation:** The tracking-service incorporates MongoDB geospatial indexes for locating the nearest available driver and employs a [custom algorithm](https://github.com/Stonetech66/MicroRide/blob/main/tracking-service/core/utils.py) to calculate drivers' estimated time of arrival (ETA) based on their recent location data and speed, ensuring accurate and timely ride experiences.
 
 - **Real-time Notifications**: Through the notification-service, MicroRide utilizes WebSockets to provide instantaneous updates to both drivers and users. Whether conveying ride cancellations, ride request, notifying of driver arrivals, or marking ride completions, the system ensures prompt notifications for a seamless user experience.
   
 ## 📋 Services Overview
 
-1. **👤 User Account Service:** Handles user registration, login, and robust authentication. It serves as the authentication service validating JWT tokens and providing a secure authentication mechanism.
+1. **👤 User Account Service:** Manages user registration, login, and ensures strong authentication. It functions as the authentication service, validating user credentials, issuing JWT tokens, and maintaining a secure authentication process.
 
 2. **🚗 Driver Service:** Responsible for various driver-related tasks, including driver registration, handling driver responses to ride requests (acceptance and rejection), and retrieving driver information.
 
@@ -100,7 +98,6 @@ Documentation for each service can be accessed at the following URLs:
 - Ride Service API Docs: `http://localhost:8080/ride-service/docs`
 - Payment Service API Docs: `http://localhost:8080/payment-service/docs`
 - Tracking Service API Docs: `http://localhost:8080/tracking-service/docs`
-- Notification Service API Docs: `http://localhost:8080/notification-service/docs`
 
 **Online (using external IP):**
   - User Account Service Docs: `http://EXTERNAL_IP/user-account-service/docs`
@@ -108,7 +105,6 @@ Documentation for each service can be accessed at the following URLs:
   - Ride Service API Docs: `http://EXTERNAL_IP/ride-service/docs`
   - Payment Service API Docs: `http://EXTERNAL_IP/payment-service/docs`
   - Tracking Service API Docs: `http://EXTERNAL_IP/tracking-service/docs`
-  - Notification Service API Docs: `http://EXTERNAL_IP/notification-service/docs`
 
 Replace `EXTERNAL_IP` with the actual external IP of the Nginx Ingress Controller.
 
